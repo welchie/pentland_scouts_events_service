@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.org.pentlandscouts</groupId>
+    <artifactId>events-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>events-service</name>
+    <description>Spring BootApp for Pentland Scouts Events Dynamodb</description>
+
+    <repositories>
+        <repository>
+            <id>dynamodblocal</id>
+            <name>AWS DynamoDB Local Release Repository</name>
+            <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
+        </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    <properties>
+        <start-class>uk.org.pentlandscouts.events.Application</start-class>
+        <spring.version>5.1.2.RELEASE</spring.version>
+        <httpclient.version>4.5.2</httpclient.version>
+        <spring-data-dynamodb.version>5.1.0</spring-data-dynamodb.version>
+        <bootstrap.version>3.3.7-1</bootstrap.version>
+        <sqlite4java.version>1.0.392</sqlite4java.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <springboot.version>3.1.4</springboot.version>
+        <log4j2.version>2.17.1</log4j2.version>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <java.version>21</java.version>
+        <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
+        <maven-plugins.version>3.6.0</maven-plugins.version>
+        <org.springdoc.version>2.2.0</org.springdoc.version>
+        <aws-java-sdk.version>1.12.512</aws-java-sdk.version>
+        <spring-data-dynamodb.version>5.1.0</spring-data-dynamodb.version>
+        <junit.version>4.13.2</junit.version>
+        <junit.jupiter.version>5.9.3</junit.jupiter.version>
+        <spring-data-releasetrain.version>Neumann-SR9</spring-data-releasetrain.version>
+        <com.amazonaws.DynamoDBLocal.version>2.0.0</com.amazonaws.DynamoDBLocal.version>
+        <software.amazon.awssdk.version>2.20.110</software.amazon.awssdk.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <org.springframework.spring.version>5.3.29</org.springframework.spring.version>
+        <org.springframework.version>6.0.11</org.springframework.version>
+        <org.h2.version>2.2.220</org.h2.version>
+        <jackson.core.version>2.15.2</jackson.core.version>
+        <jackson.databind.version>2.10.5.1.LIFERAY-PATCHED-1</jackson.databind.version>
+        <io.netty.version>4.1.96.Final</io.netty.version>
+        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <snakeyaml.version>2.1</snakeyaml.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <docker.user>welchie99</docker.user>
+        <docker.password>used2Think$$</docker.password>
+        <docker.url>https://hub.docker.com</docker.url>
+        <spring.profile>PROD</spring.profile>
+        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+        <dockerfile>Dockerfile</dockerfile>
+        <dockerfile.contextDirectory>${project.basedir}</dockerfile.contextDirectory>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>${docker.user}</id>
+            <name>${project.artifactId}</name>
+            <uniqueVersion>false</uniqueVersion>
+            <layout>legacy</layout>
+            <url>https://hub.docker.com/welchie99/${project.artifactId}</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>${springboot.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${springboot.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-releasetrain -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-releasetrain</artifactId>
+            <version>${spring-data-releasetrain.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-dynamodb</artifactId>
+            <version>${aws-java-sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.derjust</groupId>
+            <artifactId>spring-data-dynamodb</artifactId>
+            <version>${spring-data-dynamodb.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/DynamoDBLocal -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>DynamoDBLocal</artifactId>
+            <version>${com.amazonaws.DynamoDBLocal.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>${org.springframework.spring.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${org.h2.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.core.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.core.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.liferay/com.fasterxml.jackson.databind -->
+        <dependency>
+            <groupId>com.liferay</groupId>
+            <artifactId>com.fasterxml.jackson.databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>sqlite4java</artifactId>
+            <version>${sqlite4java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>sqlite4java-win32-x86</artifactId>
+            <version>${sqlite4java.version}</version>
+            <type>dll</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>sqlite4java-win32-x64</artifactId>
+            <version>${sqlite4java.version}</version>
+            <type>dll</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>libsqlite4java-osx</artifactId>
+            <version>${sqlite4java.version}</version>
+            <type>dylib</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>libsqlite4java-linux-i386</artifactId>
+            <version>${sqlite4java.version}</version>
+            <type>so</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.almworks.sqlite4java</groupId>
+            <artifactId>libsqlite4java-linux-amd64</artifactId>
+            <version>${sqlite4java.version}</version>
+            <type>so</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/dynamodb-enhanced -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb-enhanced</artifactId>
+            <version>${software.amazon.awssdk.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/profiles -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>profiles</artifactId>
+            <version>${software.amazon.awssdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>${io.netty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+            <version>${io.netty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>${io.netty.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${org.springdoc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <version>2.0.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>2.0.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-reflect</artifactId>
+            <version>2.0.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.kenglxn.qrgen/javase -->
+        <dependency>
+            <groupId>com.github.kenglxn.qrgen</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <source>21</source>
+                    <target>21</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+
+
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                    <mainClass>uk.org.pentlandscouts.events.Application</mainClass>
+                    <image>
+                        <env>
+                            <BP_JVM_VERSION>21</BP_JVM_VERSION>
+                        </env>
+                        <buildpacks>
+                            <buildpack>gcr.io/paketo-buildpacks/amazon-corretto</buildpack>
+                            <buildpack>paketo-buildpacks/java</buildpack>
+                            <buildpack>gcr.io/paketo-buildpacks/spring-boot</buildpack>
+                            <buildpack>gcr.io/paketo-buildpacks/syft</buildpack>
+                        </buildpacks>
+                    </image>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-plugins.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>test</includeScope>
+                            <includeTypes>so,dll,dylib</includeTypes>
+                            <outputDirectory>${project.basedir}/native-libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>uk.org.pentlandscouts.events.Application</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+
+                    <!-- Remove existing image from local repo -->
+
+                    <execution>
+                        <id>docker-clean</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>rmi</argument>
+                                <argument>${docker.user}/${project.artifactId}:${project.version}-${spring.profile}</argument>
+                                <argument>--force</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!--
+                      Create new docker image using Dockerfile which must be present in current working directory.
+                      Tag the image using maven project version information.
+                    -->
+                    <execution>
+                        <id>docker-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>-f</argument>
+                                <argument>Dockerfile</argument>
+                                <argument>-t</argument>
+                                <argument>${docker.user}/${project.artifactId}:${project.version}-${spring.profile}</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- Login and Push the image to a docker repo. -->
+                    <execution>
+                        <id>docker-login</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>login</argument>
+                                <argument>-u</argument>
+                                <argument>${docker.user}</argument>
+                                <argument>-p</argument>
+                                <argument>${docker.password}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>docker-push</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>docker</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>push</argument>
+                                <argument>${docker.user}/${project.artifactId}:${project.version}-${spring.profile}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,540 @@
+{
+	"info": {
+		"_postman_id": "32cf2958-0def-4fb6-8af8-82f8b368d9ae",
+		"name": "SensorData - DynamoDB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3254777",
+		"_collection_link": "https://cloudy-capsule-752318.postman.co/workspace/Sensor-Data~cdf11365-0c59-4d37-bccd-79d4f4033b15/collection/3254777-32cf2958-0def-4fb6-8af8-82f8b368d9ae?action=share&source=collection_link&creator=3254777"
+	},
+	"item": [
+		{
+			"name": "Get All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/all",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/{{TEST_ID}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"{{TEST_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get By ID Not Found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/{{TEST_DUMMY_ID}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"{{TEST_DUMMY_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Between Dates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/findbetween?startDate={{START_DATE}}&endDate={{END_DATE}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"findbetween"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "{{START_DATE}}"
+						},
+						{
+							"key": "endDate",
+							"value": "{{END_DATE}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By Date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/find?date={{TEST_DATE}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"find"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "{{TEST_DATE}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By Date Not Found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-KEY",
+						"value": "{{API_KEY}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/sensordata/find?date={{TEST_DUMMY_DATE}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"find"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "{{TEST_DUMMY_DATE}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Record",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/create?id={{TEST_ID}}&date={{TEST_DATE}}&tempC={{TEST_TEMPC}}&tempF={{TEST_TEMPF}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"create"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{TEST_ID}}"
+						},
+						{
+							"key": "date",
+							"value": "{{TEST_DATE}}"
+						},
+						{
+							"key": "tempC",
+							"value": "{{TEST_TEMPC}}"
+						},
+						{
+							"key": "tempF",
+							"value": "{{TEST_TEMPF}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Table",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/admin/create",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"admin",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Version",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/version/get",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"version",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By ID and Date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 200 OK\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/{{TEST_ID}}/{{TEST_DATE}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"{{TEST_ID}}",
+						"{{TEST_DATE}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find By ID and Date Not Found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Expect 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/sensordata/{{TEST_DUMMY_ID}}/{{TEST_DATE}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"sensordata",
+						"{{TEST_DUMMY_ID}}",
+						"{{TEST_DATE}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
