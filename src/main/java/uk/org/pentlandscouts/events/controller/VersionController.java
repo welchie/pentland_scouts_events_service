@@ -36,7 +36,7 @@ public class VersionController {
                 throw new Exception(err);
             }
             String manifestPath = classPath.substring(0, classPath.indexOf("!") + 1) +
-                    "/META-INF/maven/org.weewelchie/dynamo.sensordata/pom.properties";
+                    "/META-INF/maven/uk.org.pentlandscouts/events-service/pom.properties";
 
             byte[] bytes;
             try (InputStream inputStream = new URL(manifestPath).openStream()) {
@@ -59,7 +59,7 @@ public class VersionController {
                 String[] line = str.split("=");
                 if(line.length == 2)
                 {
-                    info.put(line[0],line[1].substring(0,line[1].length()-1));
+                    info.put(line[0],line[1].substring(0,line[1].length()));
                 }
             }
 

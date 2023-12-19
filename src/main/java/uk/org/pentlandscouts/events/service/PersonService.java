@@ -8,7 +8,6 @@ import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.repositories.PersonRepository;
 
-
 import java.util.List;
 
 /**
@@ -28,10 +27,12 @@ public class PersonService {
         return personRepo.findAll();
     }
 
-    public List<Person> findById(String id)
+    public List<Person> findByUid(String uid)
     {
-        logger.info("Finding Person by id:{}",id);
-        return personRepo.findById(id);
+        logger.info("Finding Person by id:{}",uid);
+
+        List<Person> results = personRepo.findByUid(uid);
+        return results;
     }
 
     public List<Person> findByFirstNameAndLastName(String firstName, String lastName)
@@ -56,6 +57,20 @@ public class PersonService {
         else
         {
             logger.info("Creating new Person record: {}",person);
+            return personRepo.save(person);
+        }
+    }
+
+    public Person update(Person person) throws PersonException {
+        if (person.getUid() == null|| person.getFirstName().trim().equals("")||
+                person.getLastName()== null || person.getLastName().trim().equals("")||
+                person.getDob()== null || person.getDob().trim().equals(""))
+        {
+            throw new PersonException("Unable to update mandatory values are empty. ID, FirstName, LastName, Dob");
+        }
+        else
+        {
+            logger.info("Updating the Person record: {}" , person);
             return personRepo.save(person);
         }
     }

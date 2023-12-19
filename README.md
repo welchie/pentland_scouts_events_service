@@ -14,3 +14,13 @@ Spring Boot application
 ### Latest Updates
 - 0.0.1-SNAPSHOT
   - Initial input
+
+### Building
+ - mvn clean install spring-boot:repackage
+
+### Running
+ - mvn clean sping-boot:run
+
+### Docker
+ - ./docker_create.sh
+ - docker run -p 80:8080 welchie99/scoutsevents:0.0.1-SNAPSHOT-PROD

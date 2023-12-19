@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin/person")
+@RequestMapping("/admin/")
 public class PersonAdminController {
 
     private  static final Logger logger = LoggerFactory.getLogger(PersonAdminController.class);
@@ -47,7 +47,7 @@ public class PersonAdminController {
     private static final String ERROR_TITLE = "errors";
 
     private static final String RESULT_TITLE = "result";
-    @GetMapping(value="/admin/create/persontable")
+    @GetMapping(value="/create/persontable")
     public ResponseEntity<Object> createSensorDataTable() throws URISyntaxException, AwsPropertiesException {
         if (    isEmpty(awsProperties.getRegion()) ||
                 isEmpty(awsProperties.getAccessKey()) ||
