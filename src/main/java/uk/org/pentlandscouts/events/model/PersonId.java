@@ -7,50 +7,37 @@ import java.io.Serializable;
 
 public class PersonId implements Serializable {
 
+    private String uid;
 
-    private String id;
-
-    private String firstName;
-
-    private String lastName;
+    private String sortKey;
 
     public PersonId()
     {
-        this(null,null,null);
+        this(null,null);
     }
 
-    public PersonId(String id, String firstName, String lastName)
+    public PersonId(String uid, String sortKey)
     {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.uid = uid;
+        this.sortKey = sortKey;
     }
 
     @DynamoDBHashKey
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @DynamoDBRangeKey
-    public String getFirstName() {
-        return firstName;
+    public String getSortKey() {
+        return sortKey;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSortKey(String sortKey) {
+        this.sortKey = sortKey;
     }
 
 }

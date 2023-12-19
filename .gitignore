@@ -11,7 +11,7 @@ target/
 **/*.pem
 **/*.ppk
 # Native libs
-#**/native-libs/
+**/native-libs/
 
 # Logs folder
 **/logs/

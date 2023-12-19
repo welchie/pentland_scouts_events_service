@@ -35,6 +35,8 @@ public class SecurityConfiguration {
         return (web) -> web.ignoring()
                 .requestMatchers(
                                  new AntPathRequestMatcher("/version/get"),
+                                new AntPathRequestMatcher("/person/*"),
+                                new AntPathRequestMatcher("/person/update/s*"),
                                  new AntPathRequestMatcher("/swagger-ui/index.html"));
     }
 

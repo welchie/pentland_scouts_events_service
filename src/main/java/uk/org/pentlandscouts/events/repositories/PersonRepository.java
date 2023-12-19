@@ -16,6 +16,6 @@ public interface PersonRepository extends CrudRepository<Person, PersonId> {
 
     List<Person> findByFirstNameAndLastNameAndDob(String firstName, String lastName,String dob);
 
-    List<Person> findById(String id);
+    List<Person> findByUid(String uid);
 
 }

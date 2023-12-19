@@ -21,20 +21,6 @@ import java.awt.image.BufferedImage;
 
 public class BarCodeController {
 
-    @Operation(summary = "Generate QR Code with content of {barcode}")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the book",
-                    content = { @Content(mediaType = "application/json") }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found",
-                    content = @Content) })
-    @GetMapping(value = "/qrcode/{barcode}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<BufferedImage> qrBarcode(@PathVariable("barcode") String barcode)
-            throws Exception {
-        return okResponse(QRCodeGenerator.generateQRCodeImage(barcode));
-    }
-
     @GetMapping(value = "/qrcode/", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<BufferedImage> qrBarcodeURL( @RequestParam(value="url") String url)
             throws Exception {
@@ -47,11 +33,5 @@ public class BarCodeController {
     @Bean
     public HttpMessageConverter<BufferedImage> createImageHttpMessageConverter() {
         return new BufferedImageHttpMessageConverter();
-    }
-
-    @GetMapping("hello")
-    public String hello()
-    {
-        return "Hello";
     }
 }

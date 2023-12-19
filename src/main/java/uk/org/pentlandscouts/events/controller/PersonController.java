@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.service.PersonService;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class PersonController {
 
-    private  static final Logger logger = LoggerFactory.getLogger(PersonController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
     @Autowired
     PersonService personService;
@@ -32,28 +33,25 @@ public class PersonController {
 
     private static final String NOT_FOUND = "Not Found";
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getPerson(@PathVariable("id") String id) throws PersonNotFoundException {
+    @GetMapping("/{uid}")
+    public ResponseEntity<Object> getPerson(@PathVariable("uid") String uid) throws PersonNotFoundException {
 
         Map<String, List<Person>> response = new HashMap<>(1);
 
         try {
-            if (!id.isEmpty()) {
-                List<Person> personList = personService.findById(id);
+            if (!uid.isEmpty()) {
+                List<Person> personList = personService.findByUid(uid);
                 if (personList.isEmpty()) {
-                    throw new PersonNotFoundException(id);
+                    throw new PersonNotFoundException(uid);
                 }
                 response.put(TABLE_NAME, personList);
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
-        }
-        catch (PersonNotFoundException pe) {
+        } catch (PersonNotFoundException pe) {
             return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             Map<String, List<String>> exceptionResponse = new HashMap<>(1);
             List<String> errors = new ArrayList<>();
@@ -79,13 +77,12 @@ public class PersonController {
     ResponseEntity<Object> findByFirstNameLastNameDob(
             @RequestParam(value = "firstName") String firstName,
             @RequestParam(value = "lastName") String lastName,
-            @RequestParam(value = "dob") String dob)
-    {
+            @RequestParam(value = "dob") String dob) {
         Map<String, List<Person>> response = new HashMap<>(1);
         try {
             if (!firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty()) {
 
-                List<Person> personList = personService.findByFirstNameAndLastNameAndDob(firstName,lastName,dob);
+                List<Person> personList = personService.findByFirstNameAndLastNameAndDob(firstName, lastName, dob);
                 if (personList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
@@ -93,9 +90,7 @@ public class PersonController {
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             Map<String, List<String>> exceptionResponse = new HashMap<>(1);
             List<String> errors = new ArrayList<>();
@@ -109,13 +104,12 @@ public class PersonController {
     @GetMapping(value = "/create")
     public ResponseEntity<Object> create(@RequestParam(value = "firstName") String firstName,
                                          @RequestParam(value = "lastName") String lastName,
-                                         @RequestParam(value = "dob") String dob)
-    {
+                                         @RequestParam(value = "dob") String dob) {
         try {
 
             Person result = null;
             //Lookup the DB for an existing record
-            List<Person> lookUpPerson = personService.findByFirstNameAndLastNameAndDob(firstName,lastName,dob);
+            List<Person> lookUpPerson = personService.findByFirstNameAndLastNameAndDob(firstName, lastName, dob);
             if (lookUpPerson.size() == 0) {
                 //Person not found create new record
 
@@ -124,18 +118,14 @@ public class PersonController {
 
 
                 result = personService.createRecord(person);
-            }
-            else
-            {
+            } else {
                 result = lookUpPerson.get(0);
             }
 
             Map<String, Person> response = new HashMap<>(1);
             response.put(TABLE_NAME, result);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             Map<String, List<String>> response = new HashMap<>(1);
             List<String> errors = new ArrayList<>();
@@ -145,4 +135,26 @@ public class PersonController {
         }
     }
 
+    @PostMapping("/update")
+    public Person update(@RequestBody Person updPerson) {
+        try {
+
+            if (updPerson != null && !updPerson.getUid().isEmpty()) {
+                //Find if the record exists
+                List<Person> currentPerson = personService.findByUid(updPerson.getUid());
+                if (!currentPerson.isEmpty()) {
+                    return personService.update(updPerson);
+                } else {
+
+                    logger.info("Person not found in the db: {}. No updates", updPerson);
+                    throw new PersonException("Person not found in the db: " + updPerson + ". No updates");
+                }
+            }
+        } catch (PersonException ex) {
+            logger.error(ex.getMessage());
+        }
+        finally {
+            return updPerson;
+        }
+    }
 }
