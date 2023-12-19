@@ -1,0 +1,6 @@
+{
+    "uid": {"S": "987654321"},
+    "firstName": {"S": "Brian"},
+    "lastName": {"S": "May"},
+    "dob": {"S": "31031973"}
+}

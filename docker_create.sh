@@ -1,1 +1,1 @@
-docker build -f Dockerfile -t welchie99/dynamo.sensordata:0.0.5-SNAPSHOT-PROD .
+docker build -f Dockerfile -t welchie99/scoutsevents:0.0.1-SNAPSHOT-PROD .
