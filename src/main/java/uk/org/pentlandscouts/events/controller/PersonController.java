@@ -33,6 +33,8 @@ public class PersonController {
 
     private static final String NOT_FOUND = "Not Found";
 
+    private static final String PERSONAL_DETAILS = "PersonalDetails";
+
     @GetMapping("/{uid}")
     public ResponseEntity<Object> getPerson(@PathVariable("uid") String uid) throws PersonNotFoundException {
 
@@ -101,10 +103,14 @@ public class PersonController {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping(value = "/create")
+    @GetMapping(value = "/create/personaldetails")
     public ResponseEntity<Object> create(@RequestParam(value = "firstName") String firstName,
                                          @RequestParam(value = "lastName") String lastName,
-                                         @RequestParam(value = "dob") String dob) {
+                                         @RequestParam(value = "dob") String dob,
+                                         @RequestParam(value = "scoutSection") String scoutSection,
+                                         @RequestParam(value = "sectionName") String sectionName,
+                                         @RequestParam(value = "scoutGroup") String scoutGroup,
+                                         @RequestParam(value= "position") String position) {
         try {
 
             Person result = null;
@@ -113,7 +119,12 @@ public class PersonController {
             if (lookUpPerson.size() == 0) {
                 //Person not found create new record
 
-                Person person = new Person(firstName, lastName, dob);
+                Person person = new Person(firstName, lastName, dob,PERSONAL_DETAILS);
+                person.setSortKey(PERSONAL_DETAILS);
+                person.setScoutGroup(scoutGroup);
+                person.setScoutSection(scoutSection);
+                person.setSectionName(sectionName);
+                person.setPosition(position);
                 logger.info("Creating new record: {}", person);
 
 

@@ -24,18 +24,28 @@ public class Person {
 
     private String dob= "";
 
+    private String scoutSection = "";
+
+    private String sectionName ="";
+    private String scoutGroup = "";
+
+    private String position = "";
+
+
+//private Event[] events; //A list of Events the person is registered on ??
+
     public Person()
     {
 
     }
 
-    public Person(String firstName, String lastName, String dob)
+    public Person(String firstName, String lastName, String dob, String sortKey)
     {
         //Genrate a UUID from the current time
         this.setUid(generateType1UUID().toString());
 
         this.setUid(uid);
-        this.setSortKey(firstName+lastName+dob);
+        this.setSortKey(sortKey);
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setDob(dob);
@@ -95,17 +105,48 @@ public class Person {
         this.dob = dob;
     }
 
+    @DynamoDBAttribute(attributeName = "scoutSection")
+    public String getScoutSection() {
+        return scoutSection;
+    }
+
+    public void setScoutSection(String scoutSection) {
+        this.scoutSection = scoutSection;
+    }
+
+    @DynamoDBAttribute(attributeName = "sectionName")
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    @DynamoDBAttribute(attributeName = "scoutGroup")
+    public String getScoutGroup() {
+        return scoutGroup;
+    }
+
+    public void setScoutGroup(String scoutGroup) {
+        this.scoutGroup = scoutGroup;
+    }
+
+    @DynamoDBAttribute(attributeName = "position")
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uid, sortKey, firstName, lastName, dob);
+        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position);
     }
 
     @Override
@@ -116,7 +157,16 @@ public class Person {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dob='" + dob + '\'' +
+                ", scoutSection='" + scoutSection + '\'' +
+                ", sectionName='" + sectionName + '\'' +
+                ", scoutGroup='" + scoutGroup + '\'' +
+                ", position='" + position + '\'' +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position);
     }
 
     private static long get64LeastSignificantBitsForVersion1() {

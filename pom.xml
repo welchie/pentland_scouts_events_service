@@ -5,7 +5,7 @@
 
     <groupId>uk.org.pentlandscouts</groupId>
     <artifactId>events-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>events-service</name>
     <description>Spring BootApp for Pentland Scouts Events Dynamodb</description>
 
@@ -58,7 +58,7 @@
         <docker.user>welchie99</docker.user>
         <docker.password>used2Think$$</docker.password>
         <docker.url>https://hub.docker.com</docker.url>
-        <spring.profile>DEV</spring.profile>
+        <spring.profile>prod</spring.profile>
         <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
         <dockerfile>Dockerfile</dockerfile>
         <dockerfile.contextDirectory>${project.basedir}</dockerfile.contextDirectory>
