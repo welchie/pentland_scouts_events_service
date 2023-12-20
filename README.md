@@ -14,12 +14,19 @@ Spring Boot application
 ### Latest Updates
 - 0.0.1-SNAPSHOT
   - Initial input
+- 0.0.2-SNAPSHOT
+  - Adding additional Personal Details
 
 ### Building
  - mvn clean install spring-boot:repackage
 
 ### Running
- - mvn clean sping-boot:run
+  - From Maven
+    - mvn clean spring-boot:run
+ - OR from built JAR
+   -  java -Dspring.profiles.active=prod -jar events-service-0.0.2-SNAPSHOT.jar
+
+
 
 ### Docker
  - ./docker_create.sh
