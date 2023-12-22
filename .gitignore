@@ -10,6 +10,7 @@ target/
 
 **/*.pem
 **/*.ppk
+**/*.cert
 # Native libs
 **/native-libs/
 
