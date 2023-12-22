@@ -22,7 +22,8 @@ Spring Boot application
 
 ### Running
   - From Maven
-    - mvn clean spring-boot:run
+    - mvn -Dspring-boot.run.profiles=<PROFILE HERE> clean spring-boot:run
+    - Requires application-PROFILE.properties in /src/main/resources e.g. application-dev.properties
  - OR from built JAR
    -  java -Dspring.profiles.active=prod -jar events-service-0.0.2-SNAPSHOT.jar
 
