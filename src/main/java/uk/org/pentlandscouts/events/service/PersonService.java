@@ -48,11 +48,12 @@ public class PersonService {
     }
 
     public Person createRecord(Person person) throws PersonException {
-        if (person.getFirstName() == null || person.getFirstName().trim().equals("")||
-                person.getLastName()== null || person.getLastName().trim().equals("")||
-                person.getDob()== null || person.getDob().trim().equals(""))
+
+        //uid ansd sort key are mandatory fiels
+        if (person.getUid() == null || person.getUid().trim().equals("")||
+                person.getSortKey()== null || person.getSortKey().trim().equals(""))
         {
-            throw new PersonException("Person FirstName, LastName, and Date of Birth must be entered to create data");
+            throw new PersonException("Person Uid, and Sortkey must be entered to create data");
         }
         else
         {
