@@ -1,8 +1,5 @@
 package uk.org.pentlandscouts.events.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
-import uk.org.pentlandscouts.events.model.PersonalDetails;
+import uk.org.pentlandscouts.events.model.domain.PersonalDetails;
 import uk.org.pentlandscouts.events.service.PersonService;
 
 import java.util.*;
@@ -36,7 +33,7 @@ public class PersonController {
 
     private static final String PERSONAL_DETAILS = "PersonalDetails";
 
-    @GetMapping("/findpersonaldetails/{uid}")
+    @GetMapping("/personaldetails/{uid}")
     public ResponseEntity<Object> getPerson(@PathVariable("uid") String uid) throws PersonNotFoundException {
 
         Map<String, List<PersonalDetails>> response = new HashMap<>(1);
@@ -44,7 +41,7 @@ public class PersonController {
         try {
             if (!uid.isEmpty()) {
                 List<Person> personList = personService.findByUid(uid);
-                if (personList.isEmpty()) {
+                if (personList.size() >0 && personList.get(0) == null) {
                     throw new PersonNotFoundException(uid);
                 }
 
