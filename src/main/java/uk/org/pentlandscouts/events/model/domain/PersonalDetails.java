@@ -1,4 +1,4 @@
-package uk.org.pentlandscouts.events.model;
+package uk.org.pentlandscouts.events.model.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
