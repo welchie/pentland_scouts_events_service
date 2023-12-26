@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.org.pentlandscouts.events.exception.PersonException;
+import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.repositories.PersonRepository;
 
@@ -73,6 +74,27 @@ public class PersonService {
         {
             logger.info("Updating the Person record: {}" , person);
             return personRepo.save(person);
+        }
+    }
+
+    public void delete(Person person) throws PersonException, PersonNotFoundException
+    {
+        if (person.getUid() == null|| person.getFirstName().trim().equals(""))
+        {
+            throw new PersonException("Person UID must be provided. Unable to remove");
+        }
+        else
+        {
+            logger.info("Removing  the Person record: {}" , person);
+            List<Person> result = personRepo.findByUid(person.getUid());
+            if (!result.isEmpty() && result.get(0).getUid().equals(person.getUid())) {
+                personRepo.delete(person);
+            }
+            else
+            {
+                logger.info("Person with UID: {} not found" , person.getUid());
+                throw new PersonNotFoundException("Person with UID: " + person.getUid() + " not found");
+            }
         }
     }
 
