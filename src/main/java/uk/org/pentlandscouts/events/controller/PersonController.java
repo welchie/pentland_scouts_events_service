@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
+import uk.org.pentlandscouts.events.model.domain.PersonalDetails;
 import uk.org.pentlandscouts.events.service.PersonService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/person")
@@ -35,18 +33,35 @@ public class PersonController {
 
     private static final String PERSONAL_DETAILS = "PersonalDetails";
 
-    @GetMapping("/{uid}")
+    @GetMapping("/personaldetails/{uid}")
     public ResponseEntity<Object> getPerson(@PathVariable("uid") String uid) throws PersonNotFoundException {
 
-        Map<String, List<Person>> response = new HashMap<>(1);
+        Map<String, List<PersonalDetails>> response = new HashMap<>(1);
 
         try {
             if (!uid.isEmpty()) {
                 List<Person> personList = personService.findByUid(uid);
-                if (personList.isEmpty()) {
+                if (personList.size() >0 && personList.get(0) == null) {
                     throw new PersonNotFoundException(uid);
                 }
-                response.put(TABLE_NAME, personList);
+
+                //Convert Person to JSON
+                Person p = personList.get(0);
+                PersonalDetails personalDetails = new PersonalDetails();
+                personalDetails.setUid(p.getUid());
+                personalDetails.setFirstName(p.getFirstName());
+                personalDetails.setLastName(p.getLastName());
+                personalDetails.setDob(p.getDob());
+                personalDetails.setPosition(p.getPosition());
+                personalDetails.setScoutGroup(p.getScoutGroup());
+                personalDetails.setScoutSection(p.getScoutSection());
+                personalDetails.setSectionName(p.getSectionName());
+
+                List<PersonalDetails> details = new ArrayList<>();
+                details.add(personalDetails);
+
+                response.put(TABLE_NAME, details);
+
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
@@ -120,7 +135,7 @@ public class PersonController {
                 //Person not found create new record
 
                 Person person = new Person(firstName, lastName, dob,PERSONAL_DETAILS);
-                person.setSortKey(PERSONAL_DETAILS);
+                person.setSortKey(firstName + lastName + dob);
                 person.setScoutGroup(scoutGroup);
                 person.setScoutSection(scoutSection);
                 person.setSectionName(sectionName);

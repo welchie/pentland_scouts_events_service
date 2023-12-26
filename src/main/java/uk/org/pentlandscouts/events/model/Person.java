@@ -31,6 +31,10 @@ public class Person {
 
     private String position = "";
 
+    private String medicine = "";
+
+    private String allergies = "";
+
 
 //private Event[] events; //A list of Events the person is registered on ??
 
@@ -65,14 +69,13 @@ public class Person {
     public String getSortKey() {
         return sortKey;
     }
-
+    @NotNull
     public void setSortKey(String sortKey) {
         this.sortKey = sortKey;
     }
 
 
     @DynamoDBAttribute(attributeName = "firstName")
-    @NotNull
     @DynamoDBIndexRangeKey(globalSecondaryIndexName = "firstname-lastname-index",attributeName = "firstName")
     @DynamoDbSecondarySortKey(indexNames = "firstname-lastname-index")
     public String getFirstName() {
@@ -84,7 +87,6 @@ public class Person {
     }
 
     @DynamoDBAttribute(attributeName = "lastName")
-    @NotNull
     @DynamoDBIndexHashKey(globalSecondaryIndexName = "firstname-lastname-index", attributeName = "lastName")
     @DynamoDbSecondaryPartitionKey(indexNames = "firstname-lastname-index")
     public String getLastName() {
@@ -96,7 +98,6 @@ public class Person {
     }
 
     @DynamoDBAttribute(attributeName = "dob")
-    @NotNull
     public String getDob() {
         return dob;
     }
@@ -141,33 +142,24 @@ public class Person {
         this.position = position;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position);
+    @DynamoDBAttribute(attributeName = "medicine")
+    public String getMedicine() {
+        return medicine;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "uid='" + uid + '\'' +
-                ", sortKey='" + sortKey + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", dob='" + dob + '\'' +
-                ", scoutSection='" + scoutSection + '\'' +
-                ", sectionName='" + sectionName + '\'' +
-                ", scoutGroup='" + scoutGroup + '\'' +
-                ", position='" + position + '\'' +
-                '}';
+    public void setMedicine(String medicine) {
+        this.medicine = medicine;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position);
+    @DynamoDBAttribute(attributeName = "allergies")
+    public String getAllergies() {
+        return allergies;
     }
+
+    public void setAllergies(String allergies) {
+        this.allergies = allergies;
+    }
+
 
     private static long get64LeastSignificantBitsForVersion1() {
         Random random = new Random();
@@ -189,5 +181,35 @@ public class Person {
         long most64SigBits = get64MostSignificantBitsForVersion1();
         long least64SigBits = get64LeastSignificantBitsForVersion1();
         return new UUID(most64SigBits, least64SigBits);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position) && Objects.equals(medicine, person.medicine) && Objects.equals(allergies, person.allergies);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "uid='" + uid + '\'' +
+                ", sortKey='" + sortKey + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dob='" + dob + '\'' +
+                ", scoutSection='" + scoutSection + '\'' +
+                ", sectionName='" + sectionName + '\'' +
+                ", scoutGroup='" + scoutGroup + '\'' +
+                ", position='" + position + '\'' +
+                ", medicine='" + medicine + '\'' +
+                ", allergies='" + allergies + '\'' +
+                '}';
     }
 }

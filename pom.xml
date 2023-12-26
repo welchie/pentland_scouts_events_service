@@ -5,7 +5,7 @@
 
     <groupId>uk.org.pentlandscouts</groupId>
     <artifactId>events-service</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>events-service</name>
     <description>Spring BootApp for Pentland Scouts Events Dynamodb</description>
 
@@ -31,9 +31,9 @@
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <springboot.version>3.1.4</springboot.version>
         <log4j2.version>2.17.1</log4j2.version>
-        <maven.compiler.target>21</maven.compiler.target>
-        <maven.compiler.source>21</maven.compiler.source>
         <java.version>21</java.version>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
         <maven-plugins.version>3.6.0</maven-plugins.version>
         <org.springdoc.version>2.2.0</org.springdoc.version>
@@ -55,6 +55,9 @@
         <snakeyaml.version>2.1</snakeyaml.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <powermock.version>2.0.9</powermock.version>
+        <qrgen.javase.version>3.0.1</qrgen.javase.version>
+        <org.json.version>20231013</org.json.version>
         <docker.user>welchie99</docker.user>
         <docker.password>used2Think$$</docker.password>
         <docker.url>https://hub.docker.com</docker.url>
@@ -328,25 +331,25 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-core</artifactId>
-            <version>2.0.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
-            <version>2.0.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-reflect</artifactId>
-            <version>2.0.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -354,7 +357,14 @@
         <dependency>
             <groupId>com.github.kenglxn.qrgen</groupId>
             <artifactId>javase</artifactId>
-            <version>3.0.1</version>
+            <version>${qrgen.javase.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org.json.version}</version>
         </dependency>
 
 
@@ -368,8 +378,8 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
@@ -387,7 +397,7 @@
                     <mainClass>uk.org.pentlandscouts.events.Application</mainClass>
                     <image>
                         <env>
-                            <BP_JVM_VERSION>21</BP_JVM_VERSION>
+                            <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
                         </env>
                         <buildpacks>
                             <buildpack>gcr.io/paketo-buildpacks/amazon-corretto</buildpack>
