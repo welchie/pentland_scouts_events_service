@@ -183,4 +183,42 @@ public class PersonController {
             return updPerson;
         }
     }
+
+    @DeleteMapping("/{uid}")
+    public ResponseEntity<Object> removePerson(@PathVariable("uid") String uid) throws PersonNotFoundException {
+
+        Map<String, List<String>> response = new HashMap<>(1);
+
+        try {
+            if (!uid.isEmpty()) {
+                List<Person> personList = personService.findByUid(uid);
+                if (personList.size() >0 && personList.get(0) == null) {
+                    throw new PersonNotFoundException(uid);
+                }
+
+                personService.delete(personList.get(0));
+
+
+                List<String> details = new ArrayList<>();
+                details.add("Person with UID: " + uid + " removed");
+
+                response.put(TABLE_NAME, details);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+        } catch (PersonNotFoundException pe) {
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
