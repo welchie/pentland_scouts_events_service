@@ -11,6 +11,7 @@ import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.model.domain.PersonalDetails;
 import uk.org.pentlandscouts.events.service.PersonService;
+import uk.org.pentlandscouts.events.utils.EventUtils;
 
 import java.util.*;
 
@@ -197,7 +198,7 @@ public class PersonController {
                                                                                 person.getDob());
             if (lookUpPerson.size() == 0) {
                 //Person not found create new record
-                person.setUid(Person.generateType1UUID().toString());
+                person.setUid(EventUtils.generateType1UUID().toString());
                 person.setSortKey(person.getFirstName() + person.getLastName() + person.getDob());
                 logger.info("Creating new record: {}", person);
 
