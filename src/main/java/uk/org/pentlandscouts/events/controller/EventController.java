@@ -147,7 +147,7 @@ public class EventController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createPerson(@RequestBody Event event) {
+    public ResponseEntity<Object> createEvent(@RequestBody Event event) {
         try {
 
             Event result = null;

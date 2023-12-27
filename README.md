@@ -23,6 +23,8 @@ Spring Boot application
 - 0.0.5-SNAPSHOT
   - Adding Emergency Contact details
   - Tidy up URLs
+- 0.0.6-SNAPSHOT
+  - Adding Event Table and Rest API
   
 
 ### Building
