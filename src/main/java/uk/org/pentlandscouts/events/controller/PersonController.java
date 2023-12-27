@@ -118,6 +118,31 @@ public class PersonController {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/find/{uid}")
+    ResponseEntity<Object> findByUid(
+            @PathVariable("uid") String uid) {
+        Map<String, List<Person>> response = new HashMap<>(1);
+        try {
+            if (!uid.isEmpty()) {
+
+                List<Person> personList = personService.findByUid(uid);
+                if (personList.isEmpty()) {
+                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                }
+                response.put(TABLE_NAME, personList);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @GetMapping(value = "/create/personaldetails")
     public ResponseEntity<Object> create(@RequestParam(value = "firstName") String firstName,
                                          @RequestParam(value = "lastName") String lastName,
@@ -140,6 +165,40 @@ public class PersonController {
                 person.setScoutSection(scoutSection);
                 person.setSectionName(sectionName);
                 person.setPosition(position);
+                logger.info("Creating new record: {}", person);
+
+
+                result = personService.createRecord(person);
+            } else {
+                result = lookUpPerson.get(0);
+            }
+
+            Map<String, Person> response = new HashMap<>(1);
+            response.put(TABLE_NAME, result);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> response = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            response.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/create")
+    public ResponseEntity<Object> createPerson(@RequestBody Person person) {
+        try {
+
+            Person result = null;
+            //Lookup the DB for an existing record
+            List<Person> lookUpPerson = personService.findByFirstNameAndLastNameAndDob(person.getFirstName(),
+                                                                                person.getLastName(),
+                                                                                person.getDob());
+            if (lookUpPerson.size() == 0) {
+                //Person not found create new record
+                person.setUid(Person.generateType1UUID().toString());
+                person.setSortKey(person.getFirstName() + person.getLastName() + person.getDob());
                 logger.info("Creating new record: {}", person);
 
 
