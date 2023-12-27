@@ -35,6 +35,18 @@ public class Person {
 
     private String allergies = "";
 
+    //Standard contact Details
+    private String contactEmail = "";
+
+    private String contactPhoneNo = "";
+
+    //Emergency Contact Details
+    private String emergencyContactName = "";
+
+    private String emergencyContactNo = "";
+
+    private String emergencyRelationship = "";
+
 
 //private Event[] events; //A list of Events the person is registered on ??
 
@@ -160,7 +172,50 @@ public class Person {
         this.allergies = allergies;
     }
 
+    @DynamoDBAttribute(attributeName = "contactEmail")
+    public String getContactEmail() {
+        return contactEmail;
+    }
 
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    @DynamoDBAttribute(attributeName = "contactPhoneNo")
+    public String getContactPhoneNo() {
+        return contactPhoneNo;
+    }
+
+    public void setContactPhoneNo(String contactPhoneNo) {
+        this.contactPhoneNo = contactPhoneNo;
+    }
+
+    @DynamoDBAttribute(attributeName = "emergencyContactName")
+    public String getEmergencyContactName() {
+        return emergencyContactName;
+    }
+
+    public void setEmergencyContactName(String emergencyContactName) {
+        this.emergencyContactName = emergencyContactName;
+    }
+
+    @DynamoDBAttribute(attributeName = "emergencyContactNo")
+    public String getEmergencyContactNo() {
+        return emergencyContactNo;
+    }
+
+    public void setEmergencyContactNo(String emergencyContactNo) {
+        this.emergencyContactNo = emergencyContactNo;
+    }
+
+    @DynamoDBAttribute(attributeName = "emergencyRelationship")
+    public String getEmergencyRelationship() {
+        return emergencyRelationship;
+    }
+
+    public void setEmergencyRelationship(String emergencyRelationship) {
+        this.emergencyRelationship = emergencyRelationship;
+    }
     private static long get64LeastSignificantBitsForVersion1() {
         Random random = new Random();
         long random63BitLong = random.nextLong() & 0x3FFFFFFFFFFFFFFFL;
@@ -188,12 +243,12 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position) && Objects.equals(medicine, person.medicine) && Objects.equals(allergies, person.allergies);
+        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position) && Objects.equals(medicine, person.medicine) && Objects.equals(allergies, person.allergies) && Objects.equals(contactEmail, person.contactEmail) && Objects.equals(contactPhoneNo, person.contactPhoneNo) && Objects.equals(emergencyContactName, person.emergencyContactName) && Objects.equals(emergencyContactNo, person.emergencyContactNo) && Objects.equals(emergencyRelationship, person.emergencyRelationship);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies);
+        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies, contactEmail, contactPhoneNo, emergencyContactName, emergencyContactNo, emergencyRelationship);
     }
 
     @Override
@@ -210,6 +265,11 @@ public class Person {
                 ", position='" + position + '\'' +
                 ", medicine='" + medicine + '\'' +
                 ", allergies='" + allergies + '\'' +
+                ", contactEmail='" + contactEmail + '\'' +
+                ", contactPhoneNo='" + contactPhoneNo + '\'' +
+                ", emergencyContactName='" + emergencyContactName + '\'' +
+                ", emergencyContactNo='" + emergencyContactNo + '\'' +
+                ", emergencyRelationship='" + emergencyRelationship + '\'' +
                 '}';
     }
 }

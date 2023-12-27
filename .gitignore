@@ -11,6 +11,8 @@ target/
 **/*.pem
 **/*.ppk
 **/*.cert
+
+**/*.png
 # Native libs
 **/native-libs/
 

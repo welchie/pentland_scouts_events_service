@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
 import uk.org.pentlandscouts.events.model.Person;
+import uk.org.pentlandscouts.events.model.domain.EmergencyContactDetails;
 import uk.org.pentlandscouts.events.model.domain.MedicalDetails;
 import uk.org.pentlandscouts.events.service.PersonService;
 
@@ -17,11 +18,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/person/medicaldetails")
+@RequestMapping("/person/emergency")
 
-public class MedicalDetailsController {
+public class EmergencyContactController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MedicalDetailsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmergencyContactController.class);
 
     @Autowired
     PersonService personService;
@@ -36,10 +37,11 @@ public class MedicalDetailsController {
     private static final String PERSONAL_DETAILS = "MedicalDetails";
 
 
-    @GetMapping(value = "/update")
+    @GetMapping(value = "/update/")
     public ResponseEntity<Object> create(@RequestParam(value = "uid") String uid,
-                                         @RequestParam(value = "medicine") String medicine,
-                                         @RequestParam(value = "allergies") String allergies) {
+                                         @RequestParam(value = "emergencyContactName") String emergencyContactName,
+                                         @RequestParam(value = "emergencyContactNo") String emergencyContactNo,
+                                         @RequestParam(value = "emergencyRelationship") String emergencyRelationship) {
         try {
 
 
@@ -51,8 +53,9 @@ public class MedicalDetailsController {
                 //Person found add medical details
 
                 Person person = lookUpPerson.get(0);
-                person.setMedicine(medicine);
-                person.setAllergies(allergies);
+                person.setEmergencyContactName(emergencyContactName);
+                person.setEmergencyContactNo(emergencyContactNo);
+                person.setEmergencyRelationship(emergencyRelationship);
                 logger.info("Updating the record: {}", person);
 
 
@@ -82,7 +85,7 @@ public class MedicalDetailsController {
     @GetMapping("/{uid}")
     public ResponseEntity<Object> getMedicalDetails(@PathVariable("uid") String uid) throws PersonNotFoundException
     {
-        Map<String, List<MedicalDetails>> response = new HashMap<>(1);
+        Map<String, List<EmergencyContactDetails>> response = new HashMap<>(1);
 
         try {
             if (!uid.isEmpty()) {
@@ -93,16 +96,17 @@ public class MedicalDetailsController {
 
                 //Convert Person to JSON
                 Person p = personList.get(0);
-                MedicalDetails medicalDetails = new MedicalDetails();
-                medicalDetails.setUid(p.getUid());
-                medicalDetails.setFirstName(p.getFirstName());
-                medicalDetails.setLastName(p.getLastName());
-                medicalDetails.setDob(p.getDob());
-                medicalDetails.setMedicine(p.getMedicine());
-                medicalDetails.setAllergies(p.getAllergies());
+                EmergencyContactDetails emergencyContactDetails = new EmergencyContactDetails();
+                emergencyContactDetails.setUid(p.getUid());
+                emergencyContactDetails.setFirstName(p.getFirstName());
+                emergencyContactDetails.setLastName(p.getLastName());
+                emergencyContactDetails.setDob(p.getDob());
+                emergencyContactDetails.setEmergencyContactName(p.getEmergencyContactName());
+                emergencyContactDetails.setEmergencyContactNo(p.getEmergencyContactNo());
+                emergencyContactDetails.setEmergencyContactRelationship(p.getEmergencyRelationship());
 
-                List<MedicalDetails> details = new ArrayList<>();
-                details.add(medicalDetails);
+                List<EmergencyContactDetails> details = new ArrayList<>();
+                details.add(emergencyContactDetails);
 
                 response.put(TABLE_NAME, details);
 
