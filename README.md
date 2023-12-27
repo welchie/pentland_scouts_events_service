@@ -20,6 +20,9 @@ Spring Boot application
   - Adding Medical details
 - 0.0.4-SNAPSHOT
   - Adding Delete Person method
+- 0.0.5-SNAPSHOT
+  - Adding Emergency Contact details
+  - Tidy up URLs
   
 
 ### Building
