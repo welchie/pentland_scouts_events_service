@@ -210,7 +210,7 @@ public class EventController {
             if (!uid.isEmpty()) {
                 List<Event> eventList = service.findByUid(uid);
                 if (eventList.size() >0 && eventList.get(0) == null) {
-                    throw new PersonNotFoundException(uid);
+                    throw new EventNotFoundException(uid);
                 }
 
                 service.delete(eventList.get(0));
