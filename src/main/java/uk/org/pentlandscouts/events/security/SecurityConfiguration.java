@@ -1,6 +1,6 @@
 package uk.org.pentlandscouts.events.security;
 
-import com.google.firebase.auth.FirebaseAuth;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,9 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import uk.org.pentlandscouts.events.config.AuthProperties;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -18,6 +18,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
 
 
+    @Autowired
+    AuthProperties authProperties;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -46,9 +48,9 @@ public class SecurityConfiguration {
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
+                .username(authProperties.getUserName())
+                .password(authProperties.getPassword())
+                .roles(authProperties.getRole())
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
