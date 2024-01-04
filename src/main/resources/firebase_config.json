@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pentland-scouts-events",
+  "private_key_id": "568cb14d6cb32973a9b535214a041c6c66160c5f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDb12dSCeemWwSm\nqQg6KOPmWuePtsvpyG2fxLJavLXqUt+16mnds8tg6tn2wiQgB7TUzgebR0LFiQER\nJY102S6DrAweksIuDQpF1nfgHbj0pv9OpnTy4I/8J4Sd8Alz1IjGcM4PSc1jFpZY\nLPIaAajVyZHcyoqlWPaxZXA61/7t8QVs9/KlZNjt53CiCv6/ovDbINAZJDzn/D/v\n4ufJlEsUB6aafnzz1zvE/rAs3DdpCjeIqdZAzB6mRPmpKoLRViYpZMAPwTTFCb1p\nmaXlB7KEuK5iLORypqO/ved4bBTGzreQPPDQ2Rcvi7m7AV9+nfFIWpFy9W9ux55h\nt2VGm4zXAgMBAAECggEAYmXr53LqffGwR75RoeKKeyEGEzPA2m9s7b13DRj5HZwh\naIW3A9YFOmhzzbhAvhtk63kaO3yuXMcBNMEHqxzIboQT2p1aj40jo3WmqyfykIKs\ntHHZ15n+qGCxwZVeTbt7ysJT4NDqPqct/OKFLHHAtYvmnxoC65ZBuM4L6TKjdrD9\nmnU4P7bG/+0aLmLiUOBDa0ZbyO+Fv/gYR4uF1zxRwnAObK3eyooS/mcrNC2M/4fT\nSs/cFnNuCh216Vmj/6oGAdXiRKhWCywFnqTVOPbMx2xQrpni/UR3OzqG7mN1+h+O\ntcqvfft5tibebON8uQAi6hbbhoDSB+Kqw8fFeldx2QKBgQDvDSC7umHD/kuFlapN\niw3/xmJU/3EvkPsnxr0udcPD8BLMP8BmdYq3eubdcA746mWgvlEurOZRE9AuxZCh\n8hTZu7tOdHHnogfdKBsM7wNMwU7qd/6OgBXFcfPGxyiFLBGVYzvecV5NLyR+mfw9\ngtvSk2SARXbPGBSueB5v6aPvjwKBgQDrbZwC+ES54PNnPKFEfPS6qX9F/z17UOfB\nz/cw/ioIyjLVuzlJNUHwZwf3A3fcG446IL+03vXaOwQX4mwmKeCDHCnmHEIIwApA\naBUVCac6WQpicgzYHxaVIPbbkbdH3sw5bSrqlGkY6FvqWzWmmRpFH0T9oURXXTvj\nRqNazHZqOQKBgFzNOeHnD0EpHWR0n7KOwxaCi3X33Jbcr8PXUWYR7bfJIWMNdMHR\n69Ii8jEQ6Z8UT/PBLn7yPE9JY85kgCt+cT29tY9VgUqtCmR+x1GUEDHh8aLwhnAH\npWwLOtn2QvLAEuttpLZMSJGqNX64hMXUYUY0VhW94cuvy4eXtik4CJ5dAoGAd1fb\nDE5aWHfGK4E6pwNI9A7UK+GVgxuiQEdyIW3WVRpa5qnAAnJy+LDiAr/JVNTLJoBP\nbhrQOk5MZucqt7Xmz8/JFZMhjln7WGbquP1pvlRAxWLXS/+GbRaGzQtzA4XXtQy4\nAq41EKFJZuXRrqBSBtQxHvlPMZJbt3ypdm/LX1ECgYAC4IqV9rAS7mz7MqQVm6Za\nNIOw2Igut0eqTTvMRV0t6StJhAkj1U7KscoDhXSqTIcdRBMeYxD1Cwe99zPNmun6\nFi7sqL6YUVUYXMNE5rZe6T0mmRcA889aReJwNf8dgjyt5LcAX9E4rLVEGc73CR5v\ngCSLSdOmvCamdQu27BItWg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-itvod@pentland-scouts-events.iam.gserviceaccount.com",
+  "client_id": "117488731815470791493",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-itvod%40pentland-scouts-events.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
