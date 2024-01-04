@@ -127,9 +127,10 @@ public class PersonController {
             if (!uid.isEmpty()) {
 
                 List<Person> personList = personService.findByUid(uid);
-                if (personList.isEmpty()) {
-                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                if (personList.size() >0 && personList.get(0) == null) {
+                    throw new PersonNotFoundException(uid);
                 }
+
                 response.put(TABLE_NAME, personList);
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
