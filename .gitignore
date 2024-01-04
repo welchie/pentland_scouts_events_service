@@ -7,6 +7,7 @@ target/
 # Ignore properties files
 **/src/main/resources/application.properties
 **/src/test/resources/application.properties
+**/src/main/resources/firebase_config.json 
 
 **/*.pem
 **/*.ppk
