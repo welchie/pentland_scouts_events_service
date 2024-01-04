@@ -19,6 +19,8 @@ target/
 # Logs folder
 **/logs/
 
+**/.DS_store
+
 ### STS ###
 .apt_generated
 .classpath
@@ -27,6 +29,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+
+
 
 ### IntelliJ IDEA ###
 .idea
@@ -46,3 +50,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Firebase Stuff ###
+pentland-scouts-events-firebase-adminsdk-itvod-eefde45b72.json

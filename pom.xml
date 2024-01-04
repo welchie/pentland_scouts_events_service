@@ -5,7 +5,7 @@
 
     <groupId>uk.org.pentlandscouts</groupId>
     <artifactId>events-service</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
     <name>events-service</name>
     <description>Spring BootApp for Pentland Scouts Events Dynamodb</description>
 
@@ -58,6 +58,7 @@
         <powermock.version>2.0.9</powermock.version>
         <qrgen.javase.version>3.0.1</qrgen.javase.version>
         <org.json.version>20231013</org.json.version>
+        <firebase.version>9.2.0</firebase.version>
         <docker.user>welchie99</docker.user>
         <docker.password>used2Think$$</docker.password>
         <docker.url>https://hub.docker.com</docker.url>
@@ -366,6 +367,34 @@
             <artifactId>json</artifactId>
             <version>${org.json.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>${firebase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.wicket/wicket-core -->
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+            <version>10.0.0-M2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet</groupId>-->
+<!--            <artifactId>javax.servlet-api</artifactId>-->
+<!--            <version>4.0.1</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
 
 
     </dependencies>
