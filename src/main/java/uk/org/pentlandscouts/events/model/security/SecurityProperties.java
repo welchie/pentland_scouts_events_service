@@ -9,7 +9,6 @@ import java.util.List;
 
 @Component
 @ConfigurationProperties("security")
-@PropertySource("classpath:application.properties")
 @Data
 public class SecurityProperties {
 
