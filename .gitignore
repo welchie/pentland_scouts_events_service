@@ -7,6 +7,7 @@ target/
 # Ignore properties files
 **/src/main/resources/application.properties
 **/src/test/resources/application.properties
+**/src/main/resources/firebase_config.json 
 
 **/*.pem
 **/*.ppk
@@ -19,6 +20,8 @@ target/
 # Logs folder
 **/logs/
 
+**/.DS_store
+
 ### STS ###
 .apt_generated
 .classpath
@@ -27,6 +30,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+
+
 
 ### IntelliJ IDEA ###
 .idea
@@ -46,3 +51,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Firebase Stuff ###
+pentland-scouts-events-firebase-adminsdk-itvod-eefde45b72.json
