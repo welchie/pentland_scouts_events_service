@@ -16,6 +16,7 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import java.util.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/person")
 
 public class PersonController {
@@ -87,8 +88,25 @@ public class PersonController {
      * @return
      */
     @GetMapping("/all")
-    public List<Person> findAll() {
-        return personService.findAll();
+    public ResponseEntity<Object> findAll() {
+
+        Map<String, List<Person>> response = new HashMap<>(1);
+        try {
+                List<Person> personList = personService.findAll();
+                if (personList.isEmpty()) {
+                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                }
+                response.put(TABLE_NAME, personList);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/find")
