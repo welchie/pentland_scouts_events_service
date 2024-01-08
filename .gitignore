@@ -10,7 +10,6 @@ target/
 **/src/test/resources/application.properties
 **/src/main/resources/firebase_config.json 
 
-
 **/*.pem
 **/*.ppk
 **/*.cert
