@@ -22,8 +22,8 @@ import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class SecurityConfig  {
 
     @Autowired

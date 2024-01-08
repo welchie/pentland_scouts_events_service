@@ -22,7 +22,7 @@ import uk.org.pentlandscouts.events.utils.CookieUtils;
 
 import java.io.IOException;
 
-@Component
+//@Component
 @Slf4j
 public class SecurityFilter extends OncePerRequestFilter {
 
