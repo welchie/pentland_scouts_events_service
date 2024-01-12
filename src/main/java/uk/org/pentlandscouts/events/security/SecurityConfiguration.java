@@ -55,19 +55,4 @@ public class SecurityConfiguration {
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService() {
-//
-//        //Get the user details form Firebase??
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
-
-
 }
