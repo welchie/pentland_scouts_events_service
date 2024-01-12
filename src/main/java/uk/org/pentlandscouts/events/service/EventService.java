@@ -1,5 +1,6 @@
 package uk.org.pentlandscouts.events.service;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,12 @@ import org.springframework.stereotype.Service;
 import uk.org.pentlandscouts.events.exception.EventException;
 import uk.org.pentlandscouts.events.exception.EventNotFoundException;
 import uk.org.pentlandscouts.events.model.Event;
+import uk.org.pentlandscouts.events.model.EventId;
 import uk.org.pentlandscouts.events.repositories.EventRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service layer for Crud event for Person entity
@@ -33,6 +37,7 @@ public class EventService {
         logger.info("Finding Event by id:{}",uid);
 
         List<Event> results = repo.findByUid(uid);
+
         return results;
     }
 
