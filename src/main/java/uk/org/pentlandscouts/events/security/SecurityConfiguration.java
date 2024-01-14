@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                         new AntPathRequestMatcher("/person/update/s*"),
                         new AntPathRequestMatcher("/barcodes/qrcode/*"),
                         new AntPathRequestMatcher("/event/*"),
+                        new AntPathRequestMatcher("/eventattendee/*"),
                         new AntPathRequestMatcher("/swagger-ui/index.html"));
     }
 

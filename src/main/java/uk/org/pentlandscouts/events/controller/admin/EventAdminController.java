@@ -24,9 +24,11 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceInUseException;
 import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
 import uk.org.pentlandscouts.events.config.AwsProperties;
 import uk.org.pentlandscouts.events.exception.AwsPropertiesException;
+import uk.org.pentlandscouts.events.exception.EventAttendeeException;
 import uk.org.pentlandscouts.events.exception.EventException;
 import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.model.Event;
+import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.utils.EventUtils;
 
@@ -49,6 +51,8 @@ public class EventAdminController {
     private static final String PERSON_TABLE_NAME = "Person";
 
     private static final String EVENT_TABLE_NAME = "Event";
+
+    private static final String EVENTATTENDEE_TABLE_NAME = "EventAttendee";
     private static final String ERROR_TITLE = "errors";
 
     private static final String RESULT_TITLE = "result";
@@ -253,4 +257,103 @@ public class EventAdminController {
         return "Event table was created";
     }
 
+    @GetMapping(value="/create/eventattendeetable")
+    public ResponseEntity<Object> createEventAttendeeDataTable() throws URISyntaxException, AwsPropertiesException {
+        if (EventUtils.isEmpty(awsProperties.getRegion()) ||
+                EventUtils.isEmpty(awsProperties.getAccessKey()) ||
+                EventUtils.isEmpty(awsProperties.getSecretKey()))
+        {
+            throw new AwsPropertiesException("Unable to get AWS Properties");
+        }
+        logger.info("Creating EventAttendee table in DynamoDB...");
+        AwsCredentialsProvider creds = StaticCredentialsProvider.create(AwsBasicCredentials.create(awsProperties.getAccessKey(), awsProperties.getSecretKey()));
+
+        DynamoDbClient dbClient;
+        if (!awsProperties.getEndPointURL().isEmpty())
+        {
+            dbClient = DynamoDbClient.builder()
+                    .region(Region.of(awsProperties.getRegion()))
+                    .endpointOverride(new URI(awsProperties.getEndPointURL()) )
+                    .credentialsProvider(creds)
+                    .build();
+        }
+        else
+        {
+            dbClient = DynamoDbClient.builder()
+                    .region(Region.of(awsProperties.getRegion()))
+                    .credentialsProvider(creds)
+                    .build();
+        }
+
+        DynamoDbEnhancedClient enhancedClient =
+                DynamoDbEnhancedClient.builder()
+                        .dynamoDbClient(dbClient)
+                        .build();
+
+        DynamoDbTable<EventAttendee> eventattendeeTable =
+                enhancedClient.table(EVENTATTENDEE_TABLE_NAME, TableSchema.fromBean(EventAttendee.class));
+
+
+        try
+        {
+            String responseText =createEventAttendeeTable(eventattendeeTable,dbClient);
+            Map<String, List<String>> response = new HashMap<>(1);
+            List<String> result = new ArrayList<>();
+            result.add(responseText);
+            response.put(RESULT_TITLE,result);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (EventAttendeeException e)
+        {
+            logger.error(e.getMessage());
+            Map<String, List<String>> response = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            response.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    private String createEventAttendeeTable(DynamoDbTable<EventAttendee> eventattendeeDynamoDbTable, DynamoDbClient dynamoDbClient) throws EventAttendeeException {
+        // Create the DynamoDB table by using the 'customerDynamoDbTable' DynamoDbTable instance.
+        try{
+            eventattendeeDynamoDbTable.createTable(builder -> builder
+                    .globalSecondaryIndices(gsi -> gsi.indexName("event-person-index")
+                            // 3. Populate the GSI with all attributes.
+                            .projection(p -> p
+                                    .projectionType(ProjectionType.ALL))
+                            .provisionedThroughput(b -> b
+                                    .readCapacityUnits(10L)
+                                    .writeCapacityUnits(10L)
+                                    .build())
+                    )
+                    .provisionedThroughput(b -> b
+                            .readCapacityUnits(10L)
+                            .writeCapacityUnits(10L)
+                            .build())
+            );
+
+            // The 'dynamoDbClient' instance that's passed to the builder for the DynamoDbWaiter is the same instance
+            // that was passed to the builder of the DynamoDbEnhancedClient instance used to create the 'customerDynamoDbTable'.
+            // This means that the same Region that was configured on the standard 'dynamoDbClient' instance is used for all service clients.
+            try (DynamoDbWaiter waiter = DynamoDbWaiter.builder().client(dynamoDbClient).build()) { // DynamoDbWaiter is Autocloseable
+                ResponseOrException<DescribeTableResponse> response = waiter
+                        .waitUntilTableExists(builder -> builder.tableName(EVENTATTENDEE_TABLE_NAME).build())
+                        .matched();
+                DescribeTableResponse tableDescription = response.response().orElseThrow(
+                        () -> new RuntimeException("Event table was not created."));
+                // The actual error can be inspected in response.exception()
+                logger.info("Table {} created. {}", EVENTATTENDEE_TABLE_NAME, tableDescription);
+            }
+
+
+        } catch (ResourceInUseException e) {
+            throw new EventAttendeeException(e.getMessage());
+
+        }
+
+        logger.info("Event table was created.");
+        return "Event table was created";
+    }
 }
