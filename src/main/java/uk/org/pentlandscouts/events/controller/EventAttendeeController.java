@@ -119,6 +119,33 @@ public class EventAttendeeController {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/find")
+    ResponseEntity<Object> findByEventUidAndCheckedIn(
+            @RequestParam(value = "eventUid") String eventUid,
+            @RequestParam(value = "checkedIn") Boolean checkedIn) {
+        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        try {
+            if (!eventUid.isEmpty()) {
+
+                List<EventAttendee> eventAttendeeList = service.findByEventUidAndCheckedIn(eventUid,checkedIn);
+                if (eventAttendeeList.isEmpty()) {
+                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                }
+                response.put(TABLE_NAME, eventAttendeeList);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createEventAttendee(@RequestBody EventAttendee eventAttendee) {
         try {

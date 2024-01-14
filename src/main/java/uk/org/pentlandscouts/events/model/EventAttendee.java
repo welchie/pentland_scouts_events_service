@@ -45,19 +45,19 @@ public class EventAttendee {
     }
 
     @DynamoDBAttribute(attributeName = "eventUid")
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "event_person-index",attributeName = "eventUid")
+    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "event-person-index",attributeName = "eventUid")
     @DynamoDbSecondarySortKey(indexNames = "event-person-index")
     public String getEventUid() {
         return eventUid;
     }
 
-    public void setEventUid(String name) {
+    public void setEventUid(String eventUid) {
         this.eventUid = eventUid;
     }
 
     @DynamoDBAttribute(attributeName = "personUid")
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = "event_person-index", attributeName = "personUid")
-    @DynamoDbSecondaryPartitionKey(indexNames = "event_person-index")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "event-person-index", attributeName = "personUid")
+    @DynamoDbSecondaryPartitionKey(indexNames = "event-person-index")
     public String getPersonUid() {
         return personUid;
     }
@@ -67,7 +67,7 @@ public class EventAttendee {
     }
 
     @DynamoDBAttribute(attributeName = "checkedIn")
-    public Boolean getCheckedIn() {
+    public Boolean isCheckedIn() {
         return checkedIn;
     }
 

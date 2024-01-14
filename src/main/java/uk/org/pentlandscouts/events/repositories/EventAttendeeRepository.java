@@ -19,7 +19,7 @@ public interface EventAttendeeRepository extends CrudRepository<EventAttendee, E
 
     List<EventAttendee> findByEventUidAndPersonUid(String eventUid,String personUid);
 
-    //List<EventAttendee> findByCheckedIn(Boolean checkedIn);
+    //List<EventAttendee> findByEventUidAndCheckedIn(String eventUid, Boolean checkedIn);
 
 
 }

@@ -54,6 +54,14 @@ public class EventAttendeeService {
         return repo.findByEventUidAndPersonUid(eventUid,personUid);
     }
 
+    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid,Boolean checkedIn) {
+        logger.info("Returning all EventAttendees by eventUId {} that are checkedIn {}", eventUid, checkedIn);
+        List<EventAttendee> eventAttendees = repo.findByEventUid(eventUid)
+                .stream()
+                .filter(e -> e.isCheckedIn() == checkedIn).toList();
+        return eventAttendees;
+    }
+
     public EventAttendee createRecord(EventAttendee eventAttendee) throws EventAttendeeException {
 
         //name and venue are mandatory fields
