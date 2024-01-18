@@ -14,6 +14,7 @@ import java.util.Objects;
 @DynamoDBTable(tableName = "EventAttendee")
 public class EventAttendee {
 
+    //first_name, last_name, age_at_start, contact_email_address, photo_permission, allergies, medical, dietary
     @Id
     private String uid = "";
 
@@ -24,6 +25,8 @@ public class EventAttendee {
     private String personUid = "";
 
     private Boolean checkedIn = false;
+
+    private Boolean photoPermission = false;
 
     @DynamoDbPartitionKey
     @DynamoDBHashKey(attributeName = "uid")
@@ -75,17 +78,27 @@ public class EventAttendee {
         this.checkedIn =checkedIn;
     }
 
+    @DynamoDBAttribute(attributeName = "photoPermission")
+    public Boolean getPhotoPermission() {
+        return photoPermission;
+    }
+
+    public void setPhotoPermission(Boolean photoPermission) {
+        this.photoPermission =photoPermission;
+    }
+
     public EventAttendee()
     {
 
     }
 
-    public EventAttendee(String eventUid, String personUid)
+    public EventAttendee(String eventUid, String personUid, Boolean photoPermission)
     {
         this.setUid(EventUtils.generateType1UUID().toString());
         this.setEventUid(eventUid);
         this.setPersonUid(personUid);
         this.setCheckedIn(false);
+        this.setPhotoPermission(photoPermission);
         this.setSortKey(this.getEventUid() + this.getPersonUid() );
     }
 
@@ -94,22 +107,23 @@ public class EventAttendee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EventAttendee that = (EventAttendee) o;
-        return Objects.equals(uid, that.uid) && Objects.equals(sortKey, that.sortKey) && Objects.equals(eventUid, that.eventUid) && Objects.equals(personUid, that.personUid) && Objects.equals(checkedIn, that.checkedIn);
+        return Objects.equals(uid, that.uid) && Objects.equals(sortKey, that.sortKey) && Objects.equals(eventUid, that.eventUid) && Objects.equals(personUid, that.personUid) && Objects.equals(checkedIn, that.checkedIn) && Objects.equals(photoPermission, that.photoPermission);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, sortKey, eventUid, personUid, checkedIn);
+        return Objects.hash(uid, sortKey, eventUid, personUid, checkedIn, photoPermission);
     }
 
     @Override
     public String toString() {
-        return "EventAttendees{" +
+        return "EventAttendee{" +
                 "uid='" + uid + '\'' +
                 ", sortKey='" + sortKey + '\'' +
                 ", eventUid='" + eventUid + '\'' +
-                ", perosnUid='" + personUid + '\'' +
+                ", personUid='" + personUid + '\'' +
                 ", checkedIn=" + checkedIn +
+                ", photoPermission=" + photoPermission +
                 '}';
     }
 }

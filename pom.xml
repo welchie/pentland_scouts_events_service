@@ -59,6 +59,9 @@
         <qrgen.javase.version>3.0.1</qrgen.javase.version>
         <org.json.version>20231013</org.json.version>
         <firebase.version>9.2.0</firebase.version>
+        <lombok.version>1.18.30</lombok.version>
+        <wicket.version>10.0.0-M2</wicket.version>
+        <apache.poi.version>5.2.5</apache.poi.version>
         <docker.user>welchie99</docker.user>
         <docker.password>used2Think$$</docker.password>
         <docker.url>https://hub.docker.com</docker.url>
@@ -376,7 +379,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>${lombok.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -384,15 +387,33 @@
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
-            <version>10.0.0-M2</version>
+            <version>${wicket.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache.poi.version}</version>
+        </dependency>
 <!--        <dependency>-->
-<!--            <groupId>javax.servlet</groupId>-->
-<!--            <artifactId>javax.servlet-api</artifactId>-->
-<!--            <version>4.0.1</version>-->
-<!--            <scope>provided</scope>-->
+<!--            <groupId>org.jxls</groupId>-->
+<!--            <artifactId>jxls-jexcel</artifactId>-->
+<!--            <version>1.0.9</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.dhatim</groupId>-->
+<!--            <artifactId>fastexcel-reader</artifactId>-->
+<!--            <version>0.15.3</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.dhatim</groupId>-->
+<!--            <artifactId>fastexcel</artifactId>-->
+<!--            <version>0.15.3</version>-->
 <!--        </dependency>-->
 
 
