@@ -50,7 +50,6 @@ public class PersonService {
 
     public Person createRecord(Person person) throws PersonException {
 
-        //uid ansd sort key are mandatory fiels
         if (person.getUid() == null || person.getUid().trim().equals("")||
                 person.getSortKey()== null || person.getSortKey().trim().equals(""))
         {
@@ -58,9 +57,22 @@ public class PersonService {
         }
         else
         {
-            logger.info("Creating new Person record: {}",person);
+            //Check if the record already exists, if so perform an update
+            List<Person> lookUpPerson = personRepo.findByFirstNameAndLastNameAndDob(person.getFirstName(), person.getLastName(), person.getDob());
+            if (lookUpPerson.size() > 0) {
+                //Record found set Person.uid
+                logger.info("Person exists updating Person record: {}",person);
+                person.setUid(lookUpPerson.get(0).getUid());
+            }
+            else {
+                logger.info("Creating new Person record: {}",person);
+            }
+
             return personRepo.save(person);
         }
+
+
+
     }
 
     public Person update(Person person) throws PersonException {

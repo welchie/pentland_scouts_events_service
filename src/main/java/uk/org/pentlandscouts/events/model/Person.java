@@ -50,6 +50,10 @@ public class Person {
     private String emergencyRelationship = "";
 
 
+
+    private String photoPermission = "";
+
+
 //private Event[] events; //A list of Events the person is registered on ??
 
     public Person()
@@ -225,17 +229,26 @@ public class Person {
         this.dietary = dietary;
     }
 
+    @DynamoDBAttribute(attributeName = "photoPermission")
+    public String getPhotoPermission() {
+        return photoPermission;
+    }
+
+    public void setPhotoPermission(String photoPermission) {
+        this.photoPermission = photoPermission;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position) && Objects.equals(medicine, person.medicine) && Objects.equals(allergies, person.allergies) && Objects.equals(dietary, person.dietary) && Objects.equals(contactEmail, person.contactEmail) && Objects.equals(contactPhoneNo, person.contactPhoneNo) && Objects.equals(emergencyContactName, person.emergencyContactName) && Objects.equals(emergencyContactNo, person.emergencyContactNo) && Objects.equals(emergencyRelationship, person.emergencyRelationship);
+        return Objects.equals(uid, person.uid) && Objects.equals(sortKey, person.sortKey) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(dob, person.dob) && Objects.equals(scoutSection, person.scoutSection) && Objects.equals(sectionName, person.sectionName) && Objects.equals(scoutGroup, person.scoutGroup) && Objects.equals(position, person.position) && Objects.equals(medicine, person.medicine) && Objects.equals(allergies, person.allergies) && Objects.equals(dietary, person.dietary) && Objects.equals(contactEmail, person.contactEmail) && Objects.equals(contactPhoneNo, person.contactPhoneNo) && Objects.equals(emergencyContactName, person.emergencyContactName) && Objects.equals(emergencyContactNo, person.emergencyContactNo) && Objects.equals(emergencyRelationship, person.emergencyRelationship) && Objects.equals(photoPermission, person.photoPermission);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies, dietary, contactEmail, contactPhoneNo, emergencyContactName, emergencyContactNo, emergencyRelationship);
+        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies, dietary, contactEmail, contactPhoneNo, emergencyContactName, emergencyContactNo, emergencyRelationship, photoPermission);
     }
 
     @Override
@@ -258,6 +271,7 @@ public class Person {
                 ", emergencyContactName='" + emergencyContactName + '\'' +
                 ", emergencyContactNo='" + emergencyContactNo + '\'' +
                 ", emergencyRelationship='" + emergencyRelationship + '\'' +
+                ", photoPermission='" + photoPermission + '\'' +
                 '}';
     }
 }
