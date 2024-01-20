@@ -3,9 +3,7 @@ package uk.org.pentlandscouts.events.utils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +15,8 @@ public class ExcelUtils {
     public Map<Integer, List<String>> importFromExcel(String fileName) throws FileNotFoundException
     {
         try {
-            InputStream file = getFileFromResourceAsStream(fileName);
+            //InputStream file = getFileFromResourceAsStream(fileName);
+            FileInputStream file = new FileInputStream(new File(fileName));
             Workbook workbook = new XSSFWorkbook(file);
 
             Sheet sheet = workbook.getSheetAt(0);

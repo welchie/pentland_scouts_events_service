@@ -113,8 +113,6 @@ public class ImportPeopleTest {
         }
         for(Person p:personList)
         {
-
-
             try {
                 //Call person Service to add to the DB
                 p = personService.createRecord(p);
