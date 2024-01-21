@@ -24,9 +24,9 @@ public class EventAttendee {
 
     private String personUid = "";
 
-    private Boolean checkedIn = false;
+    private String checkedIn = "false";
 
-    private Boolean photoPermission = false;
+    private String photoPermission = "false";
 
     @DynamoDbPartitionKey
     @DynamoDBHashKey(attributeName = "uid")
@@ -70,20 +70,20 @@ public class EventAttendee {
     }
 
     @DynamoDBAttribute(attributeName = "checkedIn")
-    public Boolean isCheckedIn() {
+    public String getCheckedIn() {
         return checkedIn;
     }
 
-    public void setCheckedIn(Boolean checkedIn) {
+    public void setCheckedIn(String checkedIn) {
         this.checkedIn =checkedIn;
     }
 
     @DynamoDBAttribute(attributeName = "photoPermission")
-    public Boolean getPhotoPermission() {
+    public String getPhotoPermission() {
         return photoPermission;
     }
 
-    public void setPhotoPermission(Boolean photoPermission) {
+    public void setPhotoPermission(String photoPermission) {
         this.photoPermission =photoPermission;
     }
 
@@ -92,12 +92,12 @@ public class EventAttendee {
 
     }
 
-    public EventAttendee(String eventUid, String personUid, Boolean photoPermission)
+    public EventAttendee(String eventUid, String personUid, String photoPermission)
     {
         this.setUid(EventUtils.generateType1UUID().toString());
         this.setEventUid(eventUid);
         this.setPersonUid(personUid);
-        this.setCheckedIn(false);
+        this.setCheckedIn("false");
         this.setPhotoPermission(photoPermission);
         this.setSortKey(this.getEventUid() + this.getPersonUid() );
     }

@@ -55,11 +55,11 @@ public class EventAttendeeService {
         return repo.findByEventUidAndPersonUid(eventUid,personUid);
     }
 
-    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid,Boolean checkedIn) {
+    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid,String checkedIn) {
         logger.info("Returning all EventAttendees by eventUId {} that are checkedIn {}", eventUid, checkedIn);
         List<EventAttendee> eventAttendees = repo.findByEventUid(eventUid)
                 .stream()
-                .filter(e -> e.isCheckedIn() == checkedIn).toList();
+                .filter(e -> e.getCheckedIn() == checkedIn).toList();
         return eventAttendees;
     }
 

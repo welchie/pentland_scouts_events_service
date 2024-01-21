@@ -122,7 +122,7 @@ public class EventAttendeeController {
     @GetMapping("/find")
     ResponseEntity<Object> findByEventUidAndCheckedIn(
             @RequestParam(value = "eventUid") String eventUid,
-            @RequestParam(value = "checkedIn") Boolean checkedIn) {
+            @RequestParam(value = "checkedIn") String checkedIn) {
         Map<String, List<EventAttendee>> response = new HashMap<>(1);
         try {
             if (!eventUid.isEmpty()) {

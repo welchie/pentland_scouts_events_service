@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -39,6 +36,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/admin/person")
 public class PersonAdminController {
 
@@ -60,6 +58,10 @@ public class PersonAdminController {
     private static final String ERROR_TITLE = "errors";
 
     private static final String RESULT_TITLE = "result";
+
+    private static final String EVENT_ATTENDEES_TITLE = "EventAttendees";
+
+
     @GetMapping(value="/create/persontable")
     public ResponseEntity<Object> createSensorDataTable() throws URISyntaxException, AwsPropertiesException {
         if (EventUtils.isEmpty(awsProperties.getRegion()) ||
@@ -159,14 +161,19 @@ public class PersonAdminController {
     }
 
     @GetMapping(value="/import/people")
-    public void importPeople(@RequestParam(value = "fileName") String fileName,
+    public ResponseEntity<Object> importPeople(@RequestParam(value = "fileName") String fileName,
                                                @RequestParam(value = "eventUid") String eventUid) {
+
+        List<Person> personList = new ArrayList<Person>();
+        List<String> eventAttendeeRecords = new ArrayList<String>();
+        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        List<EventAttendee> results = new ArrayList<>();
 
         logger.info("Importing people from file: {}...", fileName);
         try {
             Map<Integer, List<String>> data = excelUtils.importFromExcel(fileName);
 
-            List<Person> personList = new ArrayList<Person>();
+
             for (int i = 1; i < data.size(); i++) {
                 List<String> row = data.get(i);
                 /**
@@ -231,11 +238,11 @@ public class PersonAdminController {
                     if (p.getUid() != "") {
                         logger.info("Person created {}", p);
                         //Create EventAttendee record
-                        EventAttendee eventAttendee= new EventAttendee(eventUid,p.getUid(),Boolean.valueOf(p.getPhotoPermission()));
-                        //EventAttendee(String eventUid, String personUid, Boolean photoPermission)
+                        EventAttendee eventAttendee= new EventAttendee(eventUid,p.getUid(),p.getPhotoPermission());
 
                         eventAttendee = eventAttendeeService.createRecord(eventAttendee);
                         logger.info("EventAttendee created: {}",eventAttendee);
+                        results.add(eventAttendee);
                     }
                     else {
                         logger.error("Error creating Person record {}", p);
@@ -251,6 +258,10 @@ public class PersonAdminController {
             }
         } catch (FileNotFoundException e) {
             logger.error("File name found {} : {}", fileName, e.getMessage());
+        }
+        finally {
+            response.put(EVENT_ATTENDEES_TITLE,results);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 }
