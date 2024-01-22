@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import uk.org.pentlandscouts.events.exception.EventException;
 import uk.org.pentlandscouts.events.exception.EventNotFoundException;
 import uk.org.pentlandscouts.events.model.Event;
+import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.EventId;
 import uk.org.pentlandscouts.events.repositories.EventRepository;
 
@@ -57,7 +58,16 @@ public class EventService {
         }
         else
         {
-            logger.info("Creating new Event record: {}",event);
+            //Check if the record already exists, if so perform an update
+            List<Event> lookUpEvents = repo.findByNameAndVenue(event.getName(),event.getVenue());
+            if (lookUpEvents.size() > 0) {
+                //Record found set Person.uid
+                logger.info("Event record exists updating record: {}",event);
+                event.setUid(lookUpEvents.get(0).getUid());
+            }
+            else {
+                logger.info("Creating new Event record: {}",event);
+            }
             return repo.save(event);
         }
     }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import uk.org.pentlandscouts.events.exception.EventAttendeeException;
 import uk.org.pentlandscouts.events.exception.EventAttendeeNotFoundException;
 import uk.org.pentlandscouts.events.model.EventAttendee;
+import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.repositories.EventAttendeeRepository;
 
 
@@ -54,11 +55,11 @@ public class EventAttendeeService {
         return repo.findByEventUidAndPersonUid(eventUid,personUid);
     }
 
-    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid,Boolean checkedIn) {
+    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid,String checkedIn) {
         logger.info("Returning all EventAttendees by eventUId {} that are checkedIn {}", eventUid, checkedIn);
         List<EventAttendee> eventAttendees = repo.findByEventUid(eventUid)
                 .stream()
-                .filter(e -> e.isCheckedIn() == checkedIn).toList();
+                .filter(e -> e.getCheckedIn() == checkedIn).toList();
         return eventAttendees;
     }
 
@@ -72,28 +73,38 @@ public class EventAttendeeService {
         }
         else
         {
-            logger.info("Creating new EventAttendees record: {}",eventAttendee);
+
+            //Check if the record already exists, if so perform an update
+            List<EventAttendee> lookUpEventAttendees = repo.findByEventUidAndPersonUid(eventAttendee.getEventUid(),eventAttendee.getPersonUid());
+            if (lookUpEventAttendees.size() > 0) {
+                //Record found set Person.uid
+                logger.info("EventAttendee record exists updating record: {}",eventAttendee);
+                eventAttendee.setUid(lookUpEventAttendees.get(0).getUid());
+            }
+            else {
+                logger.info("Creating new EventAttendees record: {}",eventAttendee);
+            }
+
             return repo.save(eventAttendee);
         }
     }
 
     public void delete(EventAttendee eventAttendee) throws EventAttendeeException, EventAttendeeNotFoundException
     {
-        if (    eventAttendee.getEventUid() == null|| eventAttendee.getEventUid().trim().equals("") &&
-                eventAttendee.getPersonUid() == null|| eventAttendee.getPersonUid().trim().equals(""))
+        if (    eventAttendee.getUid() == null|| eventAttendee.getUid().trim().equals("") )
         {
-            throw new EventAttendeeException("EventUID & PersonUid must be provided. Unable to remove");
+            throw new EventAttendeeException("UID must be provided. Unable to remove");
         }
         else
         {
             logger.info("Removing the EventAttendees record: {}" , eventAttendee);
-            List<EventAttendee> result = repo.findByEventUid(eventAttendee.getEventUid());
+            List<EventAttendee> result = repo.findByUid(eventAttendee.getUid());
             if (!result.isEmpty() && result.get(0).getUid().equals(eventAttendee.getUid())) {
                 repo.delete(eventAttendee);
             }
             else
             {
-                logger.info("EventAttendee with EventUID: {} & PersonIOD: {} not found" , eventAttendee.getUid(), eventAttendee.getPersonUid());
+                logger.info("EventAttendee with UID: {} not found" , eventAttendee.getUid());
                 throw new EventAttendeeNotFoundException("EventAttendee with UID: " + eventAttendee.getEventUid() + " not found");
             }
         }
