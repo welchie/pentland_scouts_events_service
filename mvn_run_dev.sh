@@ -1,0 +1,1 @@
+ mvn -Dspring-boot.run.profiles=dev clean spring-boot:run
