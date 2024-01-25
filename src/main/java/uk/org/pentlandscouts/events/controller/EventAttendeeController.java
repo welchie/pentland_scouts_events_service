@@ -8,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.EventAttendeeException;
 import uk.org.pentlandscouts.events.exception.EventAttendeeNotFoundException;
-import uk.org.pentlandscouts.events.exception.EventException;
-import uk.org.pentlandscouts.events.exception.EventNotFoundException;
-import uk.org.pentlandscouts.events.model.Event;
 import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.service.EventAttendeeService;
 import uk.org.pentlandscouts.events.utils.EventUtils;
@@ -43,7 +40,7 @@ public class EventAttendeeController {
     /**
      * Find all EventAttendee Records
      *
-     * @return
+     * @return all EventAttendee Records
      */
     @GetMapping("/all")
     public ResponseEntity<Object> findAll() {
@@ -150,7 +147,7 @@ public class EventAttendeeController {
     public ResponseEntity<Object> createEventAttendee(@RequestBody EventAttendee eventAttendee) {
         try {
 
-            EventAttendee result = null;
+            EventAttendee result;
             //Lookup the DB for an existing record
             List<EventAttendee> lookUpEventAttendees = service.findByEventUidAndPersonUid(eventAttendee.getEventUid(),eventAttendee.getPersonUid());
             if (lookUpEventAttendees.size() == 0) {
@@ -202,7 +199,7 @@ public class EventAttendeeController {
     }
 
     @DeleteMapping("/{uid}")
-    public ResponseEntity<Object> remove(@PathVariable("uid") String uid) throws EventNotFoundException {
+    public ResponseEntity<Object> remove(@PathVariable("uid") String uid) throws EventAttendeeNotFoundException {
 
         Map<String, List<String>> response = new HashMap<>(1);
 
@@ -210,7 +207,7 @@ public class EventAttendeeController {
             if (!uid.isEmpty()) {
                 List<EventAttendee> eventAttendeeList = service.findByUid(uid);
                 if (eventAttendeeList.size() >0 && eventAttendeeList.get(0) == null) {
-                    throw new EventNotFoundException(uid);
+                    throw new EventAttendeeNotFoundException(uid);
                 }
 
                 service.delete(eventAttendeeList.get(0));
@@ -238,4 +235,55 @@ public class EventAttendeeController {
         }
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/checkin")
+    public ResponseEntity<Object> checkin(
+            @RequestParam(value = "eventUID") String eventUid,
+            @RequestParam(value = "personUID") String personUid,
+            @RequestParam(value = "checkIn") Boolean checkin) throws EventAttendeeNotFoundException
+    {
+
+        EventAttendee eventAttendee = new EventAttendee();
+        try {
+            //Check for input values
+            if ((eventUid.isEmpty() || eventUid.equals("")) &&
+                    (personUid.isEmpty() || personUid.equals(""))) {
+                throw new EventAttendeeNotFoundException("Event UID: " + eventUid + " personUid: " + personUid);
+            }
+
+            //Find the EventAttendee Record
+            List<EventAttendee> eventAttendees = service.findByEventUidAndPersonUid(eventUid, personUid);
+            if (eventAttendees.size() > 0) {
+                //Update the record with the value for Checkin
+                eventAttendee = eventAttendees.get(0);
+                if (checkin) {
+                    eventAttendee.setCheckedIn("true");
+                } else {
+                    eventAttendee.setCheckedIn("false");
+                }
+
+                eventAttendee = service.update(eventAttendee);
+
+                Map<String, EventAttendee> response = new HashMap<>(1);
+                response.put(TABLE_NAME, eventAttendee);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        }
+        catch (EventAttendeeException e)
+        {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    finally {
+            Map<String, EventAttendee> response = new HashMap<>(1);
+            response.put(TABLE_NAME, eventAttendee);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+    }
+
 }

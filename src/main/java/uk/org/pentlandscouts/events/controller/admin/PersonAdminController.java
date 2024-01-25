@@ -182,19 +182,20 @@ public class PersonAdminController {
                  * row[0] = firstName
                  * row[1] = lastName
                  * row[2] = Section
-                 * row[3] = Age At Start
-                 * row[4] = Contact Email
-                 * row[5] = Photo Permission
-                 * row[6] = Allergies
-                 * row[7] = Medical Requirements
-                 * row[8] = Dietary Requirements
+                 * row[3] = SubCamp
+                 * row[4] = Age At Start
+                 * row[5] = Contact Email
+                 * row[6] = Photo Permission
+                 * row[7] = Allergies
+                 * row[8] = Medical Requirements
+                 * row[9] = Dietary Requirements
                  */
 
                 if (!row.isEmpty()) {
                     if (row.get(0) != " ") {
                         String firstName = row.get(0);
                         String lastName = row.get(1);
-                        String dob = row.get(3);
+                        String dob = row.get(4);
                         String sortKey = firstName + lastName + dob;
 
                         Person p = new Person(firstName, lastName, dob, sortKey);
@@ -209,8 +210,9 @@ public class PersonAdminController {
 
                         p.setScoutSection(section);
                         p.setScoutGroup(group);
-                        p.setContactEmail(row.get(4));
-                        String photoPermission = row.get(5).toLowerCase();
+                        p.setSubCamp(row.get(3));
+                        p.setContactEmail(row.get(5));
+                        String photoPermission = row.get(6).toLowerCase();
                         if (photoPermission.equals("") || photoPermission.equals("no"))
                         {
                             p.setPhotoPermission("false");
@@ -219,9 +221,9 @@ public class PersonAdminController {
                             p.setPhotoPermission("true");
                         }
 
-                        p.setAllergies(row.get(6));
-                        p.setMedicine(row.get(7));
-                        p.setDietary(row.get(8));
+                        p.setAllergies(row.get(7));
+                        p.setMedicine(row.get(8));
+                        p.setDietary(row.get(9));
                         p.setSortKey(p.getFirstName() + p.getLastName() + p.getDob());
                         personList.add(p);
                     }

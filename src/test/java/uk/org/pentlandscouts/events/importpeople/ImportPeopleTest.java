@@ -1,7 +1,5 @@
 package uk.org.pentlandscouts.events.importpeople;
 
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,14 +11,18 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.org.pentlandscouts.events.Application;
 import uk.org.pentlandscouts.events.controller.VersionController;
+import uk.org.pentlandscouts.events.exception.EventAttendeeException;
+import uk.org.pentlandscouts.events.exception.EventException;
 import uk.org.pentlandscouts.events.exception.PersonException;
+import uk.org.pentlandscouts.events.model.Event;
+import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.Person;
+import uk.org.pentlandscouts.events.service.EventAttendeeService;
+import uk.org.pentlandscouts.events.service.EventService;
 import uk.org.pentlandscouts.events.service.PersonService;
 import uk.org.pentlandscouts.events.utils.ExcelUtils;
 
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.assertFalse;
@@ -42,7 +44,13 @@ public class ImportPeopleTest {
     @Autowired
     private PersonService personService;
 
-    private ExcelUtils excelUtils = new ExcelUtils();
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private EventAttendeeService eventAttendeeService;
+
+    private final ExcelUtils excelUtils = new ExcelUtils();
     @Test
     public void testGetExcelData() throws FileNotFoundException {
         Map<Integer, List<String>> data = excelUtils.importFromExcel(XLS_FILE);
@@ -54,9 +62,19 @@ public class ImportPeopleTest {
     }
 
     @Test
-    public void testConvertExcelDataToObjects() throws FileNotFoundException {
+    public void testConvertExcelDataToObjects() throws FileNotFoundException, EventException {
         Map<Integer, List<String>> data = excelUtils.importFromExcel(XLS_FILE);
         assertFalse(data.isEmpty());
+
+        String testEventName = "Test Event";
+        String testVenue = "Test Venue";
+        String startDate = "01/02/2025";
+        String endDate = "02/02/2025";
+        //Create a Test Event
+        Event event = new Event(testEventName, testVenue, startDate, endDate);
+        event = eventService.createRecord(event);
+        assertTrue(event.getUid() != "");
+        logger.info("Event created {}",event);
 
         List<Person> personList = new ArrayList<Person>();
         for(int i =1 ; i <data.size();i++)
@@ -68,19 +86,20 @@ public class ImportPeopleTest {
              * row[0] = firstName
              * row[1] = lastName
              * row[2] = Section
-             * row[3] = Age At Start
-             * row[4] = Contact Email
-             * row[5] = Photo Permission
-             * row[6] = Allergies
-             * row[7] = Medical Requirements
-             * row[8] = Dietary Requirements
+             * row[3] = SubCamp
+             * row[4] = Age At Start
+             * row[5] = Contact Email
+             * row[6] = Photo Permission
+             * row[7] = Allergies
+             * row[8] = Medical Requirements
+             * row[9] = Dietary Requirements
              */
 
             if (!row.isEmpty()) {
                 if (row.get(0) != " ") {
                     String firstName = row.get(0);
                     String lastName = row.get(1);
-                    String dob = row.get(3);
+                    String dob = row.get(4);
                     String sortKey = firstName + lastName + dob;
 
                     Person p = new Person(firstName,lastName,dob,sortKey);
@@ -95,21 +114,18 @@ public class ImportPeopleTest {
 
                     p.setScoutSection(section);
                     p.setScoutGroup(group);
-                    p.setContactEmail(row.get(4));
-                    String photoPermission = row.get(5);
+                    p.setSubCamp(row.get(3));
+                    p.setContactEmail(row.get(5));
+                    String photoPermission = row.get(6);
                     if (photoPermission == " ") photoPermission = "No";
                     p.setPhotoPermission(photoPermission);
-                    p.setAllergies(row.get(6));
-                    p.setMedicine(row.get(7));
-                    p.setDietary(row.get(8));
+                    p.setAllergies(row.get(7));
+                    p.setMedicine(row.get(8));
+                    p.setDietary(row.get(9));
                     p.setSortKey(p.getFirstName() + p.getLastName() + p.getDob());
                     personList.add(p);
                 }
             }
-
-
-
-           // logger.info(String.valueOf(data.get(i)));
         }
         for(Person p:personList)
         {
@@ -118,8 +134,14 @@ public class ImportPeopleTest {
                 p = personService.createRecord(p);
                 assertTrue(p.getUid() != "");
                 logger.info("Person created {}",p);
+                //Create EventAttendee record
+                EventAttendee eventAttendee= new EventAttendee(event.getUid(),p.getUid(),p.getPhotoPermission());
+
+                eventAttendee = eventAttendeeService.createRecord(eventAttendee);
+                assertTrue(eventAttendee.getUid() != "");
+                logger.info("EventAttendee created: {}",eventAttendee);
             }
-            catch (PersonException e)
+            catch (PersonException | EventAttendeeException e)
             {
                 logger.error(e.getMessage());
             }
