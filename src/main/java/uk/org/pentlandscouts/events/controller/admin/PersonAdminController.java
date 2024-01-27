@@ -209,6 +209,10 @@ public class PersonAdminController {
                         }
 
                         p.setScoutSection(section);
+                        st = new StringTokenizer(group, "(");
+                        if (st.countTokens() >= 1) {
+                            group = st.nextToken();
+                        }
                         p.setScoutGroup(group);
                         p.setSubCamp(row.get(3));
                         p.setContactEmail(row.get(5));
@@ -223,7 +227,8 @@ public class PersonAdminController {
 
                         p.setAllergies(row.get(7));
                         p.setMedicine(row.get(8));
-                        p.setDietary(row.get(9));
+                        String dietary = row.get(9);
+                        p.setDietary(dietary);
                         p.setSortKey(p.getFirstName() + p.getLastName() + p.getDob());
                         personList.add(p);
                     }
