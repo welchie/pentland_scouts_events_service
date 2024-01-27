@@ -109,16 +109,43 @@ public class PersonController {
         }
     }
 
+//    @GetMapping("/find")
+//    ResponseEntity<Object> findByFirstNameLastNameDob(
+//            @RequestParam(value = "firstName") String firstName,
+//            @RequestParam(value = "lastName") String lastName,
+//            @RequestParam(value = "dob") String dob) {
+//        Map<String, List<Person>> response = new HashMap<>(1);
+//        try {
+//            if (!firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty()) {
+//
+//                List<Person> personList = personService.findByFirstNameAndLastNameAndDob(firstName, lastName, dob);
+//                if (personList.isEmpty()) {
+//                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+//                }
+//                response.put(TABLE_NAME, personList);
+//                return new ResponseEntity<>(response, HttpStatus.OK);
+//
+//            }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage());
+//            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+//            List<String> errors = new ArrayList<>();
+//            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+//            exceptionResponse.put(ERROR_TITLE, errors);
+//            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+
     @GetMapping("/find")
-    ResponseEntity<Object> findByFirstNameLastNameDob(
+    ResponseEntity<Object> findByFirstNameLastName(
             @RequestParam(value = "firstName") String firstName,
-            @RequestParam(value = "lastName") String lastName,
-            @RequestParam(value = "dob") String dob) {
+            @RequestParam(value = "lastName") String lastName) {
         Map<String, List<Person>> response = new HashMap<>(1);
         try {
-            if (!firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty()) {
+            if (!firstName.isEmpty() && !lastName.isEmpty() ) {
 
-                List<Person> personList = personService.findByFirstNameAndLastNameAndDob(firstName, lastName, dob);
+                List<Person> personList = personService.findByFirstNameAndLastName(firstName, lastName);
                 if (personList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
