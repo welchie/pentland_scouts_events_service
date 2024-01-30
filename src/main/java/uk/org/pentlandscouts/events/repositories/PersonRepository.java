@@ -12,6 +12,8 @@ import java.util.List;
 public interface PersonRepository extends CrudRepository<Person, PersonId> {
 
     List<Person> findAll();
+
+    List<Person> findByOrderBySortKeyAsc();
     List<Person> findByFirstNameAndLastName(String firstName, String lastName);
 
     List<Person> findByFirstNameAndLastNameAndDob(String firstName, String lastName,String dob);

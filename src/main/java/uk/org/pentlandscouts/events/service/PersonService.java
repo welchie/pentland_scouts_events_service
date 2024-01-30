@@ -10,6 +10,7 @@ import uk.org.pentlandscouts.events.model.Person;
 import uk.org.pentlandscouts.events.repositories.PersonRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service layer for Crud event for Person entity
@@ -25,7 +26,10 @@ public class PersonService {
     public List<Person> findAll()
     {
         logger.info("Returning all Person objects");
-        return personRepo.findAll();
+        List<Person> results = personRepo.findAll();
+
+        return results.stream().sorted().collect(Collectors.toList());
+
     }
 
     public List<Person> findByUid(String uid)

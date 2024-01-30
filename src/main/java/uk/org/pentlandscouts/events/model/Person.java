@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @DynamoDbBean
 @DynamoDBTable(tableName = "Person")
-public class Person {
+public class Person implements Comparable<Person>{
 
 
     //photo_permission, allergies, medical, dietary
@@ -22,11 +22,11 @@ public class Person {
 
     private String lastName = "";
 
-    private String dob= "";
+    private String dob = "";
 
     private String scoutSection = "";
 
-    private String sectionName ="";
+    private String sectionName = "";
     private String scoutGroup = "";
 
     private String position = "";
@@ -50,7 +50,6 @@ public class Person {
     private String emergencyRelationship = "";
 
 
-
     private String photoPermission = "";
 
     private String subCamp = "";
@@ -58,13 +57,11 @@ public class Person {
 
 //private Event[] events; //A list of Events the person is registered on ??
 
-    public Person()
-    {
+    public Person() {
 
     }
 
-    public Person(String firstName, String lastName, String dob, String sortKey)
-    {
+    public Person(String firstName, String lastName, String dob, String sortKey) {
         //Generate a UUID from the current time
         this.setUid(EventUtils.generateType1UUID().toString());
         this.setSortKey(sortKey);
@@ -87,13 +84,14 @@ public class Person {
     public String getSortKey() {
         return sortKey;
     }
+
     public void setSortKey(String sortKey) {
         this.sortKey = sortKey;
     }
 
 
     @DynamoDBAttribute(attributeName = "firstName")
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "firstname-lastname-index",attributeName = "firstName")
+    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "firstname-lastname-index", attributeName = "firstName")
     @DynamoDbSecondarySortKey(indexNames = "firstname-lastname-index")
     public String getFirstName() {
         return firstName;
@@ -286,4 +284,12 @@ public class Person {
                 ", subCamp='" + subCamp + '\'' +
                 '}';
     }
+
+public int compareTo(Person obj)
+        {
+// we sort objects on the basis of Student Name using compareTo of String Class
+        return this.sortKey.compareTo(obj.sortKey);
+        }
 }
+
+
