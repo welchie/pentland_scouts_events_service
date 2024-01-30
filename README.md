@@ -25,6 +25,8 @@ Spring Boot application
   - Tidy up URLs
 - 0.0.6-SNAPSHOT
   - Adding Event Table and Rest API
+- 0.0.7-SNAPSHOT --> 0.0.13-SNAPSHOT
+  - Various updates including import from .xlsx file and sorting FindAll
   
 
 ### Building
@@ -42,3 +44,10 @@ Spring Boot application
 ### Docker
  - ./docker_create.sh
  - docker run -d -p 80:8080 welchie99/scoutsevents:0.0.4-SNAPSHOT-PROD
+
+
+### TODO
+ - Find all by SubCamp
+ - Add Activities / Teams / Scoreboard API
+ - Parameterise builds - current version hardcoded in files
+ - Version/Get return the env prod/dev
