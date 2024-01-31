@@ -109,6 +109,29 @@ public class PersonController {
         }
     }
 
+    @GetMapping("/all/{subcamp}")
+    public ResponseEntity<Object> findAllBySubCamp(@PathVariable("subcamp") String subcamp) {
+
+        Map<String, List<Person>> response = new HashMap<>(1);
+        try {
+            List<Person> personList = personService.findAllBySubCamp(subcamp);
+            if (personList.isEmpty()) {
+                return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+            }
+            response.put(TABLE_NAME, personList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 //    @GetMapping("/find")
 //    ResponseEntity<Object> findByFirstNameLastNameDob(
 //            @RequestParam(value = "firstName") String firstName,

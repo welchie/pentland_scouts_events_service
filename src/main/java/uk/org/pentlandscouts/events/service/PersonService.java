@@ -29,7 +29,14 @@ public class PersonService {
         List<Person> results = personRepo.findAll();
 
         return results.stream().sorted().collect(Collectors.toList());
+    }
 
+    public List<Person> findAllBySubCamp(String subCamp)
+    {
+        logger.info("Returning all Person objects for subcamp: {}", subCamp);
+        List<Person> results = personRepo.findAll().stream().filter(p -> p.getSubCamp().equals(subCamp)).collect(Collectors.toUnmodifiableList());
+
+        return results.stream().sorted().collect(Collectors.toList());
     }
 
     public List<Person> findByUid(String uid)

@@ -42,6 +42,7 @@ public class SecurityConfiguration {
                         new AntPathRequestMatcher("/person/*"),
                         new AntPathRequestMatcher("/person/update/s*"),
                         new AntPathRequestMatcher("/person/find/*"),
+                        new AntPathRequestMatcher("/person/all/*"),
                         new AntPathRequestMatcher("/barcodes/qrcode/*"),
                         new AntPathRequestMatcher("/event/*"),
                         new AntPathRequestMatcher("/eventattendee/*"),

@@ -1,5 +1,6 @@
 package uk.org.pentlandscouts.events.controller.admin;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,11 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import uk.org.pentlandscouts.events.utils.ExcelUtils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -271,4 +275,44 @@ public class PersonAdminController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
+    @GetMapping("/export/people/excel/all")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        logger.info("Exporting all Person data to Excel");
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=people_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<Person> listPeople = personService.findAll();
+        excelUtils.export(response,listPeople);
+    }
+
+    @GetMapping("/export/people/all/{subcamp}")
+    public void exportSubCampPeople( @PathVariable("subcamp") String subcamp) {
+        logger.info("Exporting all Person data for SubCamp: {} to Excel", subcamp);
+
+    }
+
+    public void exportsubCampToExcel(HttpServletResponse response, String subcamp) throws IOException {
+        logger.info("Exporting all Person data to Excel");
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=people_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<Person> listPeople = personService.findAllBySubCamp(subcamp);
+        excelUtils.export(response,listPeople);
+    }
+
+
+
+
+
 }
