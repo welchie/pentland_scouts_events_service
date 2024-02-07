@@ -5,7 +5,7 @@
 
     <groupId>uk.org.pentlandscouts</groupId>
     <artifactId>events-service</artifactId>
-    <version>0.0.14-SNAPSHOT</version>
+    <version>0.0.16-SNAPSHOT</version>
     <name>events-service</name>
     <description>Spring BootApp for Pentland Scouts Events Dynamodb</description>
 

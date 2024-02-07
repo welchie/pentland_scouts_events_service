@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.PersonException;
 import uk.org.pentlandscouts.events.exception.PersonNotFoundException;
+import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.Person;
+import uk.org.pentlandscouts.events.model.domain.PersonDomain;
 import uk.org.pentlandscouts.events.model.domain.PersonalDetails;
+import uk.org.pentlandscouts.events.service.EventAttendeeService;
 import uk.org.pentlandscouts.events.service.PersonService;
 import uk.org.pentlandscouts.events.utils.EventUtils;
 
@@ -25,6 +28,9 @@ public class PersonController {
 
     @Autowired
     PersonService personService;
+
+    @Autowired
+    EventAttendeeService eventAttendeeService;
 
     private static final String TABLE_NAME = "Person";
     private static final String ERROR_TITLE = "errors";
@@ -112,13 +118,43 @@ public class PersonController {
     @GetMapping("/all/{subcamp}")
     public ResponseEntity<Object> findAllBySubCamp(@PathVariable("subcamp") String subcamp) {
 
-        Map<String, List<Person>> response = new HashMap<>(1);
+        Map<String, List<PersonDomain>> response = new HashMap<>(1);
         try {
             List<Person> personList = personService.findAllBySubCamp(subcamp);
             if (personList.isEmpty()) {
                 return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
             }
-            response.put(TABLE_NAME, personList);
+
+            List<PersonDomain> pdList = new ArrayList<PersonDomain>();
+            //Convert to PersonDomain and look up CheckedIN status from Event Attendee
+            for(Person p: personList)
+            {
+                //Look up EventAttendee
+                List<EventAttendee> results = eventAttendeeService.findByPersonUid(p.getUid());
+                if (results.size() > 0) {
+                    PersonDomain pd = new PersonDomain(p.getFirstName(), p.getLastName(), p.getDob(), p.getSortKey(), p.getUid());
+                    pd.setAllergies(p.getAllergies());
+                    pd.setContactEmail(p.getContactEmail());
+                    pd.setDietary(p.getDietary());
+                    pd.setPhotoPermission(p.getPhotoPermission());
+                    pd.setCheckedIn(results.get(0).getCheckedIn());
+                    pd.setContactPhoneNo(p.getContactPhoneNo());
+                    pd.setMedicine(p.getMedicine());
+                    pd.setSubCamp(p.getSubCamp());
+                    pd.setEmergencyRelationship(p.getEmergencyRelationship());
+                    pd.setEmergencyContactNo(p.getEmergencyContactNo());
+                    pd.setEmergencyContactName(p.getEmergencyContactName());
+                    pd.setPosition(p.getPosition());
+                    pd.setScoutGroup(p.getScoutGroup());
+                    pd.setScoutSection(p.getScoutSection());
+                    pd.setSectionName(p.getSectionName());
+
+
+                    pdList.add(pd);
+                }
+            }
+
+            response.put(TABLE_NAME, pdList);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception e) {
