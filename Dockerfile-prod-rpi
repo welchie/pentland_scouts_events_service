@@ -1,5 +1,5 @@
 
-FROM amazoncorretto:21-al2023-jdk
+FROM arm32v7/eclipse-temurin
 MAINTAINER chris@weewelchie.org
 ARG BUILD_ARTIFACT=events-service-0.0.19-SNAPSHOT
 ARG SPRING-PROFILE=prod
