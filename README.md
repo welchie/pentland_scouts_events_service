@@ -27,6 +27,10 @@ Spring Boot application
   - Adding Event Table and Rest API
 - 0.0.7-SNAPSHOT --> 0.0.13-SNAPSHOT
   - Various updates including import from .xlsx file and sorting FindAll
+- 0.0.13-SNAPSHOT --> 0.0.19-SNAPSHOT
+  - Updates post camp
+  - Updated to inlcude export to CSV on Subcamps.
+  - Added docker build for Arm/v8 RPI environment
   
 
 ### Building
