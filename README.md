@@ -51,7 +51,6 @@ Spring Boot application
 
 
 ### TODO
- - Find all by SubCamp
  - Add Activities / Teams / Scoreboard API
  - Parameterise builds - current version hardcoded in files
  - Version/Get return the env prod/dev
