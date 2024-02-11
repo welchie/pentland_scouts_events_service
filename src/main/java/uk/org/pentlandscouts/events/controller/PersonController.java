@@ -119,8 +119,15 @@ public class PersonController {
     public ResponseEntity<Object> findAllBySubCamp(@PathVariable("subcamp") String subcamp) {
 
         Map<String, List<PersonDomain>> response = new HashMap<>(1);
+        List<Person> personList = new ArrayList<Person>();
         try {
-            List<Person> personList = personService.findAllBySubCamp(subcamp);
+            if(subcamp.equals("All"))
+            {
+                personList = personService.findAll();
+            }
+            else {
+                personList = personService.findAllBySubCamp(subcamp);
+            }
             if (personList.isEmpty()) {
                 return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
             }
