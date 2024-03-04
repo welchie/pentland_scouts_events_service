@@ -39,7 +39,7 @@ public class EventAttendeeService {
 
     public List<EventAttendee> findByPersonUid(String uid)
     {
-        logger.info("Returning all EventAttendees by personUID");
+        logger.info("Returning all EventAttendees by personUID :{}" , uid);
         return repo.findByPersonUid(uid);
     }
 
