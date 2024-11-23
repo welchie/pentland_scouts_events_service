@@ -8,10 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.org.pentlandscouts.events.exception.EventAttendeeException;
 import uk.org.pentlandscouts.events.exception.EventAttendeeNotFoundException;
-import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.EventAttendeeHist;
 import uk.org.pentlandscouts.events.service.EventAttendeeHistService;
-import uk.org.pentlandscouts.events.service.EventAttendeeService;
 import uk.org.pentlandscouts.events.utils.EventUtils;
 
 import java.text.SimpleDateFormat;
@@ -19,18 +17,16 @@ import java.util.*;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/eventattendee")
+@RequestMapping("/eventattendeehist")
 
-public class EventAttendeeController {
+public class EventAttendeeHistController {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventAttendeeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventAttendeeHistController.class);
 
     @Autowired
-    EventAttendeeService service;
-    @Autowired
-    EventAttendeeHistService histService;
+    EventAttendeeHistService service;
 
-    private static final String TABLE_NAME = "EventAttendee";
+    private static final String TABLE_NAME = "EventAttendeeHist";
     private static final String ERROR_TITLE = "errors";
 
     private static final String RESULT_TITLE = "result";
@@ -47,13 +43,13 @@ public class EventAttendeeController {
     @GetMapping("/all")
     public ResponseEntity<Object> findAll() {
 
-        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        Map<String, List<EventAttendeeHist>> response = new HashMap<>(1);
         try {
-            List<EventAttendee> eventAttendeeList = service.findAll();
-            if (eventAttendeeList.isEmpty()) {
+            List<EventAttendeeHist> eventAttendeeHistList = service.findAll();
+            if (eventAttendeeHistList.isEmpty()) {
                 return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
             }
-            response.put(TABLE_NAME, eventAttendeeList);
+            response.put(TABLE_NAME, eventAttendeeHistList);
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -69,15 +65,15 @@ public class EventAttendeeController {
     @GetMapping("/findbyevent")
     ResponseEntity<Object> findByEventUid(
             @RequestParam(value = "enventuid") String eventuid) {
-        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        Map<String, List<EventAttendeeHist>> response = new HashMap<>(1);
         try {
             if (!eventuid.isEmpty()) {
 
-                List<EventAttendee> eventAttendeeList = service.findByEventUid(eventuid);
-                if (eventAttendeeList.isEmpty()) {
+                List<EventAttendeeHist> eventAttendeeHistList = service.findByEventUid(eventuid);
+                if (eventAttendeeHistList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
-                response.put(TABLE_NAME, eventAttendeeList);
+                response.put(TABLE_NAME, eventAttendeeHistList);
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
@@ -95,15 +91,15 @@ public class EventAttendeeController {
     @GetMapping("/findbyperson")
     ResponseEntity<Object> findByPersonUid(
             @RequestParam(value = "personuid") String personuid) {
-        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        Map<String, List<EventAttendeeHist>> response = new HashMap<>(1);
         try {
             if (!personuid.isEmpty()) {
 
-                List<EventAttendee> eventAttendeeList = service.findByPersonUid(personuid);
-                if (eventAttendeeList.isEmpty()) {
+                List<EventAttendeeHist> eventAttendeeHistList = service.findByPersonUid(personuid);
+                if (eventAttendeeHistList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
-                response.put(TABLE_NAME, eventAttendeeList);
+                response.put(TABLE_NAME, eventAttendeeHistList);
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
@@ -122,15 +118,15 @@ public class EventAttendeeController {
     ResponseEntity<Object> findByEventUidAndCheckedIn(
             @RequestParam(value = "eventUid") String eventUid,
             @RequestParam(value = "checkedIn") String checkedIn) {
-        Map<String, List<EventAttendee>> response = new HashMap<>(1);
+        Map<String, List<EventAttendeeHist>> response = new HashMap<>(1);
         try {
             if (!eventUid.isEmpty()) {
 
-                List<EventAttendee> eventAttendeeList = service.findByEventUidAndCheckedIn(eventUid,checkedIn);
-                if (eventAttendeeList.isEmpty()) {
+                List<EventAttendeeHist> eventAttendeeHistList = service.findByEventUidAndCheckedIn(eventUid,checkedIn);
+                if (eventAttendeeHistList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
-                response.put(TABLE_NAME, eventAttendeeList);
+                response.put(TABLE_NAME, eventAttendeeHistList);
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
@@ -146,25 +142,27 @@ public class EventAttendeeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createEventAttendee(@RequestBody EventAttendee eventAttendee) {
+    public ResponseEntity<Object> createEventAttendeeHist(@RequestBody EventAttendeeHist eventAttendeeHist) {
         try {
 
-            EventAttendee result;
+            EventAttendeeHist result;
             //Lookup the DB for an existing record
-            List<EventAttendee> lookUpEventAttendees = service.findByEventUidAndPersonUid(eventAttendee.getEventUid(),eventAttendee.getPersonUid());
+            List<EventAttendeeHist> lookUpEventAttendees = service.findByEventUidAndPersonUid(eventAttendeeHist.getEventUid(),eventAttendeeHist.getPersonUid());
             if (lookUpEventAttendees.size() == 0) {
                 //Person not found create new record
-                eventAttendee.setUid(EventUtils.generateType1UUID().toString());
-                eventAttendee.setSortKey(eventAttendee.getEventUid() + eventAttendee.getPersonUid());
-                logger.info("Creating new record: {}", eventAttendee);
+                eventAttendeeHist.setUid(EventUtils.generateType1UUID().toString());
+                eventAttendeeHist.setSortKey(eventAttendeeHist.getEventUid() + eventAttendeeHist.getPersonUid());
+                logger.info("Creating new record: {}", eventAttendeeHist);
 
-
-                result = service.createRecord(eventAttendee);
+                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
+                String now = sdf.format(new Date());
+                eventAttendeeHist.setHistDate(now);
+                result = service.createRecord(eventAttendeeHist);
             } else {
                 result = lookUpEventAttendees.get(0);
             }
 
-            Map<String, EventAttendee> response = new HashMap<>(1);
+            Map<String, EventAttendeeHist> response = new HashMap<>(1);
             response.put(TABLE_NAME, result);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -178,25 +176,25 @@ public class EventAttendeeController {
     }
 
     @PostMapping("/update")
-    public EventAttendee update(@RequestBody EventAttendee eventAttendee) {
+    public EventAttendeeHist update(@RequestBody EventAttendeeHist eventAttendeeHist) {
         try {
 
-            if (eventAttendee != null && !eventAttendee.getUid().isEmpty()) {
+            if (eventAttendeeHist != null && !eventAttendeeHist.getUid().isEmpty()) {
                 //Find if the record exists
-                List<EventAttendee> currentEvent = service.findByEventUidAndPersonUid(eventAttendee.getUid(),eventAttendee.getPersonUid());
+                List<EventAttendeeHist> currentEvent = service.findByEventUidAndPersonUid(eventAttendeeHist.getUid(),eventAttendeeHist.getPersonUid());
                 if (!currentEvent.isEmpty()) {
-                    return service.update(eventAttendee);
+                    return service.update(eventAttendeeHist);
                 } else {
 
-                    logger.info("EventAttendee not found in the db: {}. No updates", eventAttendee);
-                    throw new EventAttendeeException("EventAttendee not found in the db: " + eventAttendee + ". No updates");
+                    logger.info("EventAttendee not found in the db: {}. No updates", eventAttendeeHist);
+                    throw new EventAttendeeException("EventAttendee not found in the db: " + eventAttendeeHist + ". No updates");
                 }
             }
         } catch (EventAttendeeException ex) {
             logger.error(ex.getMessage());
         }
         finally {
-            return eventAttendee;
+            return eventAttendeeHist;
         }
     }
 
@@ -207,16 +205,16 @@ public class EventAttendeeController {
 
         try {
             if (!uid.isEmpty()) {
-                List<EventAttendee> eventAttendeeList = service.findByUid(uid);
-                if (eventAttendeeList.size() >0 && eventAttendeeList.get(0) == null) {
+                List<EventAttendeeHist> eventAttendeeHistList = service.findByUid(uid);
+                if (eventAttendeeHistList.size() >0 && eventAttendeeHistList.get(0) == null) {
                     throw new EventAttendeeNotFoundException(uid);
                 }
 
-                service.delete(eventAttendeeList.get(0));
+                service.delete(eventAttendeeHistList.get(0));
 
 
                 List<String> details = new ArrayList<>();
-                details.add("EventAttend with UID: " + uid + " removed");
+                details.add("EventAttendHist with UID: " + uid + " removed");
 
                 response.put(TABLE_NAME, details);
 
@@ -245,7 +243,7 @@ public class EventAttendeeController {
             @RequestParam(value = "checkIn") Boolean checkin) throws EventAttendeeNotFoundException
     {
 
-        EventAttendee eventAttendee = new EventAttendee();
+        EventAttendeeHist eventAttendeeHist = new EventAttendeeHist();
         try {
             //Check for input values
             if ((eventUid.isEmpty() || eventUid.equals("")) &&
@@ -254,37 +252,20 @@ public class EventAttendeeController {
             }
 
             //Find the EventAttendee Record
-            List<EventAttendee> eventAttendees = service.findByEventUidAndPersonUid(eventUid, personUid);
-            if (eventAttendees.size() > 0) {
+            List<EventAttendeeHist> eventAttendeeHists = service.findByEventUidAndPersonUid(eventUid, personUid);
+            if (eventAttendeeHists.size() > 0) {
                 //Update the record with the value for Checkin
-                eventAttendee = eventAttendees.get(0);
+                eventAttendeeHist = eventAttendeeHists.get(0);
                 if (checkin) {
-                    eventAttendee.setCheckedIn("true");
+                    eventAttendeeHist.setCheckedIn("true");
                 } else {
-                    eventAttendee.setCheckedIn("false");
+                    eventAttendeeHist.setCheckedIn("false");
                 }
 
-                eventAttendee = service.update(eventAttendee);
+                eventAttendeeHist = service.update(eventAttendeeHist);
 
-                Map<String, EventAttendee> response = new HashMap<>(1);
-                response.put(TABLE_NAME, eventAttendee);
-
-                //Record the change in the EventAttendeeHist table
-                EventAttendeeHist eventHistRecord = new EventAttendeeHist();
-                eventHistRecord.setEventUid(eventAttendee.getEventUid());
-                eventHistRecord.setPersonUid(eventAttendee.getPersonUid());
-                eventHistRecord.setPhotoPermission(eventAttendee.getPhotoPermission());
-                eventHistRecord.setCheckedIn(eventAttendee.getCheckedIn());
-                eventHistRecord.setSortKey(eventAttendee.getSortKey());
-
-                SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
-                Date d = new Date();
-                eventHistRecord.setHistDate(sdf.format(d));
-                eventHistRecord.setUid(EventUtils.generateType1UUID().toString());
-                histService.createRecord(eventHistRecord);
-
-
-
+                Map<String, EventAttendeeHist> response = new HashMap<>(1);
+                response.put(TABLE_NAME, eventAttendeeHist);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
@@ -298,8 +279,8 @@ public class EventAttendeeController {
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     finally {
-            Map<String, EventAttendee> response = new HashMap<>(1);
-            response.put(TABLE_NAME, eventAttendee);
+            Map<String, EventAttendeeHist> response = new HashMap<>(1);
+            response.put(TABLE_NAME, eventAttendeeHist);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
