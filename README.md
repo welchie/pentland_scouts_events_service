@@ -12,45 +12,51 @@ Spring Boot application
 - Application.java - main Spring Boot class.
 
 ### Latest Updates
-- 0.0.1-SNAPSHOT
-  - Initial input
-- 0.0.2-SNAPSHOT
-  - Adding additional Personal Details
-- 0.0.3-SNAPSHOT
-  - Adding Medical details
-- 0.0.4-SNAPSHOT
-  - Adding Delete Person method
-- 0.0.5-SNAPSHOT
-  - Adding Emergency Contact details
-  - Tidy up URLs
-- 0.0.6-SNAPSHOT
-  - Adding Event Table and Rest API
-- 0.0.7-SNAPSHOT --> 0.0.13-SNAPSHOT
-  - Various updates including import from .xlsx file and sorting FindAll
-- 0.0.13-SNAPSHOT --> 0.0.19-SNAPSHOT
-  - Updates post camp
-  - Updated to inlcude export to CSV on Subcamps.
-  - Added docker build for Arm/v8 RPI environment
-  
+- 1.0.0 Production release
+  - Updated to include EventAttendeeHistory feature
+- Previous releases see Github history 
 
 ### Building
- -  mvn -Dspring-boot.run.profiles=<PROFILE HERE> clean install spring-boot:repackage 
+```bash
+    mvn -Dspring-boot.run.profiles=dev clean install spring-boot:repackage 
+```
 
 ### Running
-  - From Maven
-    - mvn -Dspring-boot.run.profiles=<PROFILE HERE> clean spring-boot:run
-    - Requires application-PROFILE.properties in /src/main/resources e.g. application-dev.properties
+#### From Maven 
+```bash
+    mvn -Dspring-boot.run.profiles=dev clean spring-boot:run
+  ```
+
+- Requires application-PROFILE.properties in /src/main/resources e.g. application-dev.properties
  - OR from built JAR
-   -  java -Dspring.profiles.active=prod -jar events-service-0.0.4-SNAPSHOT.jar
-
-
+``` bash
+    cd target
+    java -Dspring.profiles.active=dev -jar events-service-1.0.0.jar
+ ```
 
 ### Docker
- - ./docker_create.sh
- - docker run -d -p 80:8080 welchie99/scoutsevents:0.0.4-SNAPSHOT-PROD
 
+#### Creating 
+````bash
+    ./docker_create_prod.sh
+    docker images | grep scoutsevents
+ ````
+    
+    
+#### Running
+``` bash
+    docker rm scouts-events
+    docker run -d -p 9090:8080 --name scouts-events welchie99/scoutsevents:1.0.0-PROD
+    docker ps
+    docker logs scouts-events -f 
+````
+
+#### Stopping 
+``` bash
+    docker stop scouts-events
+```
 
 ### TODO
- - Add Activities / Teams / Scoreboard API
+ - ~~Add Activities / Teams / Scoreboard API~~  Separate project
  - Parameterise builds - current version hardcoded in files
  - Version/Get return the env prod/dev

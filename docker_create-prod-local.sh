@@ -1,1 +1,1 @@
-docker build -f Dockerfile-local -t welchie99/scoutsevents:0.0.19-SNAPSHOT-PROD-LOCAL .
+docker build -f Dockerfile-local -t welchie99/scoutsevents:1.0.0-PROD-LOCAL .
