@@ -1,1 +1,1 @@
-docker build -f Dockerfile-prod-rpi -t welchie99/scoutsevents:0.0.19-SNAPSHOT-PROD-RPI .
+docker build -f Dockerfile-prod-rpi -t welchie99/scoutsevents:1.0.0-PROD-RPI .
