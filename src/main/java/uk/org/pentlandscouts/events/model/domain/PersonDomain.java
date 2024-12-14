@@ -59,6 +59,12 @@ public class PersonDomain implements Comparable<PersonDomain>{
     private String checkedIn = "false";
 
 
+    /**
+     * URL to be used in the Web App to provide the URL to the Person page + UID
+     */
+    private String url = "";
+
+
 //private Event[] events; //A list of Events the person is registered on ??
 
     public PersonDomain() {
@@ -233,18 +239,25 @@ public class PersonDomain implements Comparable<PersonDomain>{
         this.checkedIn = checkedIn;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PersonDomain that = (PersonDomain) o;
-        return Objects.equals(uid, that.uid) && Objects.equals(sortKey, that.sortKey) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(dob, that.dob) && Objects.equals(scoutSection, that.scoutSection) && Objects.equals(sectionName, that.sectionName) && Objects.equals(scoutGroup, that.scoutGroup) && Objects.equals(position, that.position) && Objects.equals(medicine, that.medicine) && Objects.equals(allergies, that.allergies) && Objects.equals(dietary, that.dietary) && Objects.equals(contactEmail, that.contactEmail) && Objects.equals(contactPhoneNo, that.contactPhoneNo) && Objects.equals(emergencyContactName, that.emergencyContactName) && Objects.equals(emergencyContactNo, that.emergencyContactNo) && Objects.equals(emergencyRelationship, that.emergencyRelationship) && Objects.equals(photoPermission, that.photoPermission) && Objects.equals(subCamp, that.subCamp) && Objects.equals(checkedIn, that.checkedIn);
+        return Objects.equals(uid, that.uid) && Objects.equals(sortKey, that.sortKey) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(dob, that.dob) && Objects.equals(scoutSection, that.scoutSection) && Objects.equals(sectionName, that.sectionName) && Objects.equals(scoutGroup, that.scoutGroup) && Objects.equals(position, that.position) && Objects.equals(medicine, that.medicine) && Objects.equals(allergies, that.allergies) && Objects.equals(dietary, that.dietary) && Objects.equals(contactEmail, that.contactEmail) && Objects.equals(contactPhoneNo, that.contactPhoneNo) && Objects.equals(emergencyContactName, that.emergencyContactName) && Objects.equals(emergencyContactNo, that.emergencyContactNo) && Objects.equals(emergencyRelationship, that.emergencyRelationship) && Objects.equals(photoPermission, that.photoPermission) && Objects.equals(subCamp, that.subCamp) && Objects.equals(checkedIn, that.checkedIn) && Objects.equals(url, that.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies, dietary, contactEmail, contactPhoneNo, emergencyContactName, emergencyContactNo, emergencyRelationship, photoPermission, subCamp, checkedIn);
+        return Objects.hash(uid, sortKey, firstName, lastName, dob, scoutSection, sectionName, scoutGroup, position, medicine, allergies, dietary, contactEmail, contactPhoneNo, emergencyContactName, emergencyContactNo, emergencyRelationship, photoPermission, subCamp, checkedIn, url);
     }
 
     @Override
@@ -270,6 +283,7 @@ public class PersonDomain implements Comparable<PersonDomain>{
                 ", photoPermission='" + photoPermission + '\'' +
                 ", subCamp='" + subCamp + '\'' +
                 ", checkedIn='" + checkedIn + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 
