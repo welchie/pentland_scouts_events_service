@@ -118,6 +118,8 @@ public class PersonController {
     @GetMapping("/all/{subcamp}")
     public ResponseEntity<Object> findAllBySubCamp(@PathVariable("subcamp") String subcamp) {
 
+        final String BASE_URL = "/Person/";
+
         Map<String, List<PersonDomain>> response = new HashMap<>(1);
         List<Person> personList = new ArrayList<Person>();
         try {
@@ -155,6 +157,7 @@ public class PersonController {
                     pd.setScoutGroup(p.getScoutGroup());
                     pd.setScoutSection(p.getScoutSection());
                     pd.setSectionName(p.getSectionName());
+                    pd.setUrl(BASE_URL + p.getUid());
 
 
                     pdList.add(pd);
@@ -173,35 +176,6 @@ public class PersonController {
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-//    @GetMapping("/find")
-//    ResponseEntity<Object> findByFirstNameLastNameDob(
-//            @RequestParam(value = "firstName") String firstName,
-//            @RequestParam(value = "lastName") String lastName,
-//            @RequestParam(value = "dob") String dob) {
-//        Map<String, List<Person>> response = new HashMap<>(1);
-//        try {
-//            if (!firstName.isEmpty() && !lastName.isEmpty() && !dob.isEmpty()) {
-//
-//                List<Person> personList = personService.findByFirstNameAndLastNameAndDob(firstName, lastName, dob);
-//                if (personList.isEmpty()) {
-//                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
-//                }
-//                response.put(TABLE_NAME, personList);
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
-//            List<String> errors = new ArrayList<>();
-//            errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
-//            exceptionResponse.put(ERROR_TITLE, errors);
-//            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 
     @GetMapping("/find")
     ResponseEntity<Object> findByFirstNameLastName(
