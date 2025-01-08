@@ -245,6 +245,8 @@ public class EventAttendeeController {
             @RequestParam(value = "checkIn") Boolean checkin) throws EventAttendeeNotFoundException
     {
 
+        SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
+        Date d = new Date();
         EventAttendee eventAttendee = new EventAttendee();
         try {
             //Check for input values
@@ -264,6 +266,8 @@ public class EventAttendeeController {
                     eventAttendee.setCheckedIn("false");
                 }
 
+                eventAttendee.setLastUpdated(sdf.format(d));
+
                 eventAttendee = service.update(eventAttendee);
 
                 Map<String, EventAttendee> response = new HashMap<>(1);
@@ -277,8 +281,7 @@ public class EventAttendeeController {
                 eventHistRecord.setCheckedIn(eventAttendee.getCheckedIn());
                 eventHistRecord.setSortKey(eventAttendee.getSortKey());
 
-                SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
-                Date d = new Date();
+
                 eventHistRecord.setHistDate(sdf.format(d));
                 eventHistRecord.setUid(EventUtils.generateType1UUID().toString());
                 histService.createRecord(eventHistRecord);
