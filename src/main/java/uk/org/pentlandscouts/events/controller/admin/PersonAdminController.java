@@ -233,6 +233,17 @@ public class PersonAdminController {
                         p.setMedicine(row.get(8));
                         String dietary = row.get(9);
                         p.setDietary(dietary);
+
+                        String emergencyContactName = row.get(10);
+                        p.setEmergencyContactName(emergencyContactName);
+
+                        String emergencyContactNo = row.get(11);
+                        p.setEmergencyContactNo(emergencyContactNo);
+
+                        String emergencyContactRelation = row.get(12);
+                        p.setEmergencyRelationship(emergencyContactRelation);
+
+
                         p.setSortKey(p.getFirstName() + p.getLastName() + p.getDob());
                         personList.add(p);
                     }
