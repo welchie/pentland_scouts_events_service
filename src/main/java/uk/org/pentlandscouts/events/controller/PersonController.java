@@ -135,7 +135,7 @@ public class PersonController {
             }
 
             List<PersonDomain> pdList = new ArrayList<PersonDomain>();
-            //Convert to PersonDomain and look up CheckedIN status from Event Attendee
+            //Convert to PersonDomain and look up CheckedIN & lastUpdated status from Event Attendee
             for(Person p: personList)
             {
                 //Look up EventAttendee
@@ -157,6 +157,7 @@ public class PersonController {
                     pd.setScoutGroup(p.getScoutGroup());
                     pd.setScoutSection(p.getScoutSection());
                     pd.setSectionName(p.getSectionName());
+                    pd.setLastUpdated(results.get(0).getLastUpdated());
                     pd.setUrl(BASE_URL + p.getUid());
 
 

@@ -58,6 +58,8 @@ public class PersonDomain implements Comparable<PersonDomain>{
 
     private String checkedIn = "false";
 
+    private String lastUpdated = "";
+
 
     /**
      * URL to be used in the Web App to provide the URL to the Person page + UID
@@ -247,6 +249,14 @@ public class PersonDomain implements Comparable<PersonDomain>{
         this.url = url;
     }
 
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -284,6 +294,7 @@ public class PersonDomain implements Comparable<PersonDomain>{
                 ", subCamp='" + subCamp + '\'' +
                 ", checkedIn='" + checkedIn + '\'' +
                 ", url='" + url + '\'' +
+                ", lastUpdated='" + lastUpdated  + '\'' +
                 '}';
     }
 

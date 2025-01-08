@@ -1,11 +1,11 @@
 
 FROM amazoncorretto:21-al2023-jdk
 MAINTAINER chris@weewelchie.org
-ARG BUILD_ARTIFACT=events-service-1.0.0
+ARG BUILD_ARTIFACT=events-service-1.0.3
 ARG SPRING-PROFILE=prod
 
 CMD RUN ECHO ${BUILD_ARTIFACT}
 CMD RUN ECHO ${SPRING-PROFILE}
 
 COPY target/${BUILD_ARTIFACT}.jar ${BUILD_ARTIFACT}.jar
-ENTRYPOINT ["java","-jar","events-service-1.0.0.jar","JAVA_OPTS=-Xmx1g -Xms1g -XX:MaxPermSize=1024m","--spring.profiles.active=prod"]
+ENTRYPOINT ["java","-jar","events-service-1.0.3.jar","JAVA_OPTS=-Xmx1g -Xms1g -XX:MaxPermSize=1024m","--spring.profiles.active=prod"]

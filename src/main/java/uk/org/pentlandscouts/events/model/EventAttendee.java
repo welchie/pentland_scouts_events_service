@@ -28,6 +28,8 @@ public class EventAttendee {
 
     private String photoPermission = "false";
 
+    private String lastUpdated = "";
+
     @DynamoDbPartitionKey
     @DynamoDBHashKey(attributeName = "uid")
     public String getUid() {
@@ -87,6 +89,15 @@ public class EventAttendee {
         this.photoPermission =photoPermission;
     }
 
+    @DynamoDBAttribute(attributeName = "lastUpdated")
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated =lastUpdated;
+    }
+
     public EventAttendee()
     {
 
@@ -124,6 +135,7 @@ public class EventAttendee {
                 ", personUid='" + personUid + '\'' +
                 ", checkedIn=" + checkedIn +
                 ", photoPermission=" + photoPermission +
+                ", lastUpdatded=" + lastUpdated +
                 '}';
     }
 }
