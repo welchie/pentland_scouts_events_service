@@ -38,11 +38,12 @@ public class DynamoDBConfig {
     }
 
     @Bean
-    public io.awspring.cloud.dynamodb.DynamoDbTableNameResolver dynamoDbTableNameResolver() {
+    public io.awspring.cloud.dynamodb.DynamoDbTableNameResolver dynamoDbTableNameResolver(AwsProperties awsProperties) {
         return new io.awspring.cloud.dynamodb.DynamoDbTableNameResolver() {
             @Override
             public <T> String resolve(Class<T> clazz) {
-                return clazz.getSimpleName();
+                String prefix = awsProperties.getTablePrefix() != null ? awsProperties.getTablePrefix() : "";
+                return prefix + clazz.getSimpleName();
             }
         };
     }

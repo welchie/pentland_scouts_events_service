@@ -36,18 +36,19 @@ public class DynamoDBTableInitializer implements ApplicationListener<ContextRefr
         String endpoint = awsProperties.getEndPointURL();
         if (endpoint != null && (endpoint.contains("localhost") || endpoint.contains("127.0.0.1"))) {
             logger.info("Initializing local DynamoDB tables on localhost endpoint: {}...", endpoint);
+            String prefix = awsProperties.getTablePrefix() != null ? awsProperties.getTablePrefix() : "";
             
             // Delete tables first to ensure clean state with latest GSI schema
-            deleteTableSafe("Person", Person.class);
-            deleteTableSafe("Event", Event.class);
-            deleteTableSafe("EventAttendee", EventAttendee.class);
-            deleteTableSafe("EventAttendeeHist", EventAttendeeHist.class);
+            deleteTableSafe(prefix + "Person", Person.class);
+            deleteTableSafe(prefix + "Event", Event.class);
+            deleteTableSafe(prefix + "EventAttendee", EventAttendee.class);
+            deleteTableSafe(prefix + "EventAttendeeHist", EventAttendeeHist.class);
 
             // Create tables fresh
-            createTable(Person.class, "Person");
-            createTable(Event.class, "Event");
-            createTable(EventAttendee.class, "EventAttendee");
-            createTable(EventAttendeeHist.class, "EventAttendeeHist");
+            createTable(Person.class, prefix + "Person");
+            createTable(Event.class, prefix + "Event");
+            createTable(EventAttendee.class, prefix + "EventAttendee");
+            createTable(EventAttendeeHist.class, prefix + "EventAttendeeHist");
         } else {
             logger.info("Skipping DynamoDB auto-initialization for non-local endpoint: {}", endpoint);
         }

@@ -16,6 +16,16 @@ public class AwsProperties {
 
     private String endPointURL= "";
 
+    private String tablePrefix = "";
+
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
+
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
+    }
+
     public String getAccessKey() {
         return accessKey;
     }
