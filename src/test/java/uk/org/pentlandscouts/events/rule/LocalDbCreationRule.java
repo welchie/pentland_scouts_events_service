@@ -2,9 +2,11 @@ package uk.org.pentlandscouts.events.rule;
 
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner;
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class LocalDbCreationRule extends ExternalResource {
+public class LocalDbCreationRule implements BeforeEachCallback, AfterEachCallback {
 
     protected DynamoDBProxyServer server;
 
@@ -13,14 +15,14 @@ public class LocalDbCreationRule extends ExternalResource {
     }
 
     @Override
-    protected void before() throws Exception {
+    public void beforeEach(ExtensionContext context) throws Exception {
         String port = "8000";
         this.server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", port});
         server.start();
     }
 
     @Override
-    protected void after() {
+    public void afterEach(ExtensionContext context) throws Exception {
         this.stopUnchecked(server);
     }
 

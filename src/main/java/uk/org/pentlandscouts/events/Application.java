@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+		org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration.class
+})
 @ComponentScan(basePackages = { "uk.org.pentlandscouts.events" })
 @EntityScan(basePackages = {"uk.org.pentlandscouts.events"})
 public class Application {

@@ -1,14 +1,12 @@
 package uk.org.pentlandscouts.events.importpeople;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import uk.org.pentlandscouts.events.Application;
 import uk.org.pentlandscouts.events.controller.VersionController;
 import uk.org.pentlandscouts.events.exception.EventAttendeeException;
@@ -25,10 +23,10 @@ import uk.org.pentlandscouts.events.utils.ExcelUtils;
 import java.io.*;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringRunner.class)
+
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = Application.class)
@@ -37,7 +35,7 @@ import static org.junit.Assert.assertTrue;
         locations = "classpath:application-dev.properties")
 public class ImportPeopleTest {
 
-    static final String XLS_FILE = "people_import.xlsx";
+    static final String XLS_FILE = "src/test/resources/people_import.xlsx";
 
     private static final Logger logger = LoggerFactory.getLogger(VersionController.class);
 

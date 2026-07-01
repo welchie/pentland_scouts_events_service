@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -70,8 +69,8 @@ public class SecurityConfig  {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/version/get")).permitAll().anyRequest().authenticated()
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll().anyRequest().authenticated()
+                        .requestMatchers("/version/get").permitAll().anyRequest().authenticated()
+                        .requestMatchers("/**").permitAll().anyRequest().authenticated()
                         .requestMatchers(restSecProps.getAllowedPublicApis().toArray(String[]::new)).permitAll().anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
