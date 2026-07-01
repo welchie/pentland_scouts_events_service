@@ -41,7 +41,7 @@ public class ExcelUtils {
                 for (Cell cell : row) {
                     switch (cell.getCellType()) {
                         case STRING: {
-                            data.get(new Integer(i)).add(cell.getRichStringCellValue().getString().trim());
+                            data.get(i).add(cell.getRichStringCellValue().getString().trim());
                             break;
                         }
                         case NUMERIC: {
@@ -63,7 +63,7 @@ public class ExcelUtils {
                             break;
                         }
                         default:
-                            data.get(new Integer(i)).add(" ");
+                            data.get(i).add(" ");
                     }
                 }
                 i++;
