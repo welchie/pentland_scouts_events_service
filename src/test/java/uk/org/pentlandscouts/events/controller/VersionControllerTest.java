@@ -13,6 +13,7 @@ import static org.hamcrest.core.Is.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
+@org.springframework.test.context.TestPropertySource(locations = "classpath:application-dev.properties")
 public class VersionControllerTest {
 
     @Autowired

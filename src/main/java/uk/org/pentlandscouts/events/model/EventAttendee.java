@@ -1,9 +1,9 @@
 package uk.org.pentlandscouts.events.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import org.springframework.data.annotation.Id;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
 import uk.org.pentlandscouts.events.utils.EventUtils;
@@ -11,7 +11,6 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import java.util.Objects;
 
 @DynamoDbBean
-@DynamoDBTable(tableName = "EventAttendee")
 public class EventAttendee {
 
     //first_name, last_name, age_at_start, contact_email_address, photo_permission, allergies, medical, dietary
@@ -31,7 +30,6 @@ public class EventAttendee {
     private String lastUpdated = "";
 
     @DynamoDbPartitionKey
-    @DynamoDBHashKey(attributeName = "uid")
     public String getUid() {
         return uid;
     }
@@ -40,7 +38,7 @@ public class EventAttendee {
         this.uid = uid;
     }
 
-    @DynamoDBAttribute(attributeName = "sortKey")
+    @DynamoDbSortKey
     public String getSortKey() {
         return sortKey;
     }
@@ -49,8 +47,6 @@ public class EventAttendee {
         this.sortKey = sortKey;
     }
 
-    @DynamoDBAttribute(attributeName = "eventUid")
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "event-person-index",attributeName = "eventUid")
     @DynamoDbSecondarySortKey(indexNames = "event-person-index")
     public String getEventUid() {
         return eventUid;
@@ -60,8 +56,6 @@ public class EventAttendee {
         this.eventUid = eventUid;
     }
 
-    @DynamoDBAttribute(attributeName = "personUid")
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = "event-person-index", attributeName = "personUid")
     @DynamoDbSecondaryPartitionKey(indexNames = "event-person-index")
     public String getPersonUid() {
         return personUid;
@@ -71,31 +65,28 @@ public class EventAttendee {
         this.personUid = personUid;
     }
 
-    @DynamoDBAttribute(attributeName = "checkedIn")
     public String getCheckedIn() {
         return checkedIn;
     }
 
     public void setCheckedIn(String checkedIn) {
-        this.checkedIn =checkedIn;
+        this.checkedIn = checkedIn;
     }
 
-    @DynamoDBAttribute(attributeName = "photoPermission")
     public String getPhotoPermission() {
         return photoPermission;
     }
 
     public void setPhotoPermission(String photoPermission) {
-        this.photoPermission =photoPermission;
+        this.photoPermission = photoPermission;
     }
 
-    @DynamoDBAttribute(attributeName = "lastUpdated")
     public String getLastUpdated() {
         return lastUpdated;
     }
 
     public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated =lastUpdated;
+        this.lastUpdated = lastUpdated;
     }
 
     public EventAttendee()

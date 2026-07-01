@@ -1,54 +1,49 @@
 package uk.org.pentlandscouts.events.config;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClientBuilder;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import io.awspring.cloud.dynamodb.DynamoDbTemplate;
+
+import java.net.URI;
 
 @Configuration
-@EnableDynamoDBRepositories (basePackages = "uk.org.pentlandscouts.events.repositories")
 public class DynamoDBConfig {
 
     @Autowired
     AwsProperties awsProperties;
 
-    @Autowired
-    private ApplicationContext context;
-
     @Bean
-    public AmazonDynamoDB amazonDynamoDB() {
-        if (!awsProperties.getEndPointURL().isEmpty() || !awsProperties.getEndPointURL().equals(""))
-        {
-            AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(awsProperties.getEndPointURL() ,awsProperties.getRegion()) ;
-            return AmazonDynamoDBClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider
-                            (new BasicAWSCredentials(awsProperties.getAccessKey(),awsProperties.getSecretKey())))
-                    .withEndpointConfiguration(endpointConfiguration)
-                    .build();
-        }
-        else
-        {
-            return AmazonDynamoDBClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider
-                            (new BasicAWSCredentials(awsProperties.getAccessKey(),awsProperties.getSecretKey())))
-                    .withRegion(awsProperties.getRegion())
-                    .build();
+    public DynamoDbClient dynamoDbClient() {
+        DynamoDbClientBuilder builder = DynamoDbClient.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(awsProperties.getAccessKey(), awsProperties.getSecretKey())
+                ));
+
+        if (awsProperties.getRegion() != null && !awsProperties.getRegion().isEmpty()) {
+            builder.region(Region.of(awsProperties.getRegion()));
         }
 
+        if (awsProperties.getEndPointURL() != null && !awsProperties.getEndPointURL().isEmpty()) {
+            builder.endpointOverride(URI.create(awsProperties.getEndPointURL()));
+        }
 
+        return builder.build();
     }
 
     @Bean
-    public AWSCredentials amazonAWSCredentials() {
-        return new BasicAWSCredentials(
-                awsProperties.getAccessKey(), awsProperties.getSecretKey());
+    public io.awspring.cloud.dynamodb.DynamoDbTableNameResolver dynamoDbTableNameResolver() {
+        return new io.awspring.cloud.dynamodb.DynamoDbTableNameResolver() {
+            @Override
+            public <T> String resolve(Class<T> clazz) {
+                return clazz.getSimpleName();
+            }
+        };
     }
-
 }

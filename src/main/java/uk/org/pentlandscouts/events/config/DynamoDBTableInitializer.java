@@ -1,17 +1,15 @@
-package uk.org.pentlandscouts.events.rule;
+package uk.org.pentlandscouts.events.config;
 
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner;
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.ProvisionedThroughput;
 import software.amazon.awssdk.enhanced.dynamodb.model.CreateTableEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.model.Projection;
@@ -22,46 +20,52 @@ import uk.org.pentlandscouts.events.model.Event;
 import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.EventAttendeeHist;
 
-import java.net.URI;
+@Component
+public class DynamoDBTableInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
-public class LocalDbCreationRule implements BeforeEachCallback, AfterEachCallback {
+    private static final Logger logger = LoggerFactory.getLogger(DynamoDBTableInitializer.class);
 
-    protected DynamoDBProxyServer server;
+    @Autowired
+    private DynamoDbEnhancedClient enhancedClient;
 
-    public LocalDbCreationRule() {
-        System.setProperty("sqlite4java.library.path", "native-libs");
-    }
+    @Autowired
+    private AwsProperties awsProperties;
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-        String port = "8000";
-        this.server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", port});
-        server.start();
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        String endpoint = awsProperties.getEndPointURL();
+        if (endpoint != null && (endpoint.contains("localhost") || endpoint.contains("127.0.0.1"))) {
+            logger.info("Initializing local DynamoDB tables on localhost endpoint: {}...", endpoint);
+            
+            // Delete tables first to ensure clean state with latest GSI schema
+            deleteTableSafe("Person", Person.class);
+            deleteTableSafe("Event", Event.class);
+            deleteTableSafe("EventAttendee", EventAttendee.class);
+            deleteTableSafe("EventAttendeeHist", EventAttendeeHist.class);
 
-        initializeTables(port);
-    }
-
-    private void initializeTables(String port) {
-        try (DynamoDbClient client = DynamoDbClient.builder()
-                .endpointOverride(URI.create("http://localhost:" + port))
-                .region(Region.US_EAST_1)
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create("dummyAccessKey", "dummySecretKey")
-                ))
-                .build()) {
-
-            DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
-                    .dynamoDbClient(client)
-                    .build();
-
-            createTableSafe(enhancedClient, Person.class, "Person");
-            createTableSafe(enhancedClient, Event.class, "Event");
-            createTableSafe(enhancedClient, EventAttendee.class, "EventAttendee");
-            createTableSafe(enhancedClient, EventAttendeeHist.class, "EventAttendeeHist");
+            // Create tables fresh
+            createTable(Person.class, "Person");
+            createTable(Event.class, "Event");
+            createTable(EventAttendee.class, "EventAttendee");
+            createTable(EventAttendeeHist.class, "EventAttendeeHist");
+        } else {
+            logger.info("Skipping DynamoDB auto-initialization for non-local endpoint: {}", endpoint);
         }
     }
 
-    private <T> void createTableSafe(DynamoDbEnhancedClient enhancedClient, Class<T> entityClass, String tableName) {
+    private <T> void deleteTableSafe(String tableName, Class<T> entityClass) {
+        try {
+            DynamoDbTable<T> table = enhancedClient.table(tableName, TableSchema.fromBean(entityClass));
+            table.deleteTable();
+            logger.info("Successfully deleted table: {}", tableName);
+        } catch (ResourceNotFoundException e) {
+            // Table did not exist
+        } catch (Exception e) {
+            logger.error("Failed to delete table {}", tableName, e);
+        }
+    }
+
+    private <T> void createTable(Class<T> entityClass, String tableName) {
         try {
             DynamoDbTable<T> table = enhancedClient.table(tableName, TableSchema.fromBean(entityClass));
             
@@ -100,22 +104,9 @@ public class LocalDbCreationRule implements BeforeEachCallback, AfterEachCallbac
             }
             
             table.createTable(requestBuilder.build());
+            logger.info("Successfully created table: {}", tableName);
         } catch (Exception e) {
-            // Table already exists or creation failed
+            logger.error("Failed to create table {}", tableName, e);
         }
     }
-
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        this.stopUnchecked(server);
-    }
-
-    protected void stopUnchecked(DynamoDBProxyServer dynamoDbServer) {
-        try {
-            dynamoDbServer.stop();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }
