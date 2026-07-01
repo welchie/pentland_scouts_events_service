@@ -29,9 +29,9 @@
         <bootstrap.version>3.3.7-1</bootstrap.version>
         <sqlite4java.version>1.0.392</sqlite4java.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-        <springboot.version>3.1.4</springboot.version>
+        <springboot.version>3.3.11</springboot.version>
         <log4j2.version>2.17.1</log4j2.version>
-        <java.version>17</java.version>
+        <java.version>22</java.version>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
@@ -50,7 +50,7 @@
         <org.h2.version>2.4.240</org.h2.version>
         <jackson.core.version>2.17.2</jackson.core.version>
         <jackson.databind.version>2.10.5.1.LIFERAY-PATCHED-1</jackson.databind.version>
-        <io.netty.version>4.1.96.Final</io.netty.version>
+        <io.netty.version>5.0.0.Alpha2</io.netty.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <snakeyaml.version>2.6</snakeyaml.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -60,7 +60,7 @@
         <org.json.version>20240303</org.json.version>
         <firebase.version>9.2.0</firebase.version>
         <lombok.version>1.18.46</lombok.version>
-        <wicket.version>10.0.0-M2</wicket.version>
+        <wicket.version>10.1.0</wicket.version>
         <apache.poi.version>5.5.1</apache.poi.version>
         <docker.user>welchie99</docker.user>
         <docker.password>used2Think$$</docker.password>
@@ -84,9 +84,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit.jupiter.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -130,14 +130,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-releasetrain -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-releasetrain</artifactId>
-            <version>${spring-data-releasetrain.version}</version>
-            <type>pom</type>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -165,6 +157,16 @@
             <artifactId>DynamoDBLocal</artifactId>
             <version>${com.amazonaws.DynamoDBLocal.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
@@ -175,13 +177,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>${org.springframework.spring.version}</version>
-            <type>pom</type>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
         <dependency>
@@ -194,44 +189,27 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.core.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.core.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.liferay/com.fasterxml.jackson.databind -->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
-            <groupId>com.liferay</groupId>
-            <artifactId>com.fasterxml.jackson.databind</artifactId>
-            <version>${jackson.databind.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${org.springframework.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${org.springframework.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

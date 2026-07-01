@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import uk.org.pentlandscouts.events.config.AuthProperties;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -38,16 +37,16 @@ public class SecurityConfiguration {
     {
         return (web) -> web.ignoring()
                 .requestMatchers(
-                        new AntPathRequestMatcher("/version/get"),
-                        new AntPathRequestMatcher("/person/*"),
-                        new AntPathRequestMatcher("/person/update/s*"),
-                        new AntPathRequestMatcher("/person/find/*"),
-                        new AntPathRequestMatcher("/person/all/*"),
-                        new AntPathRequestMatcher("/barcodes/qrcode/*"),
-                        new AntPathRequestMatcher("/event/*"),
-                        new AntPathRequestMatcher("/eventattendee/*"),
-                        new AntPathRequestMatcher("/admin/person/import/people/**"),
-                        new AntPathRequestMatcher("/swagger-ui/index.html"));
+                        "/version/get",
+                        "/person/*",
+                        "/person/update/s*",
+                        "/person/find/*",
+                        "/person/all/*",
+                        "/barcodes/qrcode/*",
+                        "/event/*",
+                        "/eventattendee/*",
+                        "/admin/person/import/people/**",
+                        "/swagger-ui/index.html");
     }
 
     @Bean
