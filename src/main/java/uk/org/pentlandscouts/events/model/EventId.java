@@ -1,8 +1,5 @@
 package uk.org.pentlandscouts.events.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
-
 import java.io.Serializable;
 
 public class EventId implements Serializable {
@@ -22,7 +19,6 @@ public class EventId implements Serializable {
         this.sortKey = sortKey;
     }
 
-    @DynamoDBHashKey
     public String getUid() {
         return uid;
     }
@@ -31,7 +27,6 @@ public class EventId implements Serializable {
         this.uid = uid;
     }
 
-    @DynamoDBRangeKey
     public String getSortKey() {
         return sortKey;
     }

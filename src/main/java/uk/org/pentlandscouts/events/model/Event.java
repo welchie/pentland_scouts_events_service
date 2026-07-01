@@ -1,9 +1,9 @@
 package uk.org.pentlandscouts.events.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import org.springframework.data.annotation.Id;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
 import uk.org.pentlandscouts.events.utils.EventUtils;
@@ -11,7 +11,6 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import java.util.Objects;
 
 @DynamoDbBean
-@DynamoDBTable(tableName = "Event")
 public class Event {
 
     @Id
@@ -34,7 +33,6 @@ public class Event {
     private String emergencyContactName = "";
 
     @DynamoDbPartitionKey
-    @DynamoDBHashKey(attributeName = "uid")
     public String getUid() {
         return uid;
     }
@@ -43,7 +41,7 @@ public class Event {
         this.uid = uid;
     }
 
-    @DynamoDBAttribute(attributeName = "sortKey")
+    @DynamoDbSortKey
     public String getSortKey() {
         return sortKey;
     }
@@ -52,8 +50,6 @@ public class Event {
         this.sortKey = sortKey;
     }
 
-    @DynamoDBAttribute(attributeName = "name")
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "name-venue-index",attributeName = "name")
     @DynamoDbSecondarySortKey(indexNames = "name-venue-index")
     public String getName() {
         return name;
@@ -63,8 +59,6 @@ public class Event {
         this.name = name;
     }
 
-    @DynamoDBAttribute(attributeName = "venue")
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = "name-venue-index", attributeName = "venue")
     @DynamoDbSecondaryPartitionKey(indexNames = "name-venue-index")
     public String getVenue() {
         return venue;
@@ -74,7 +68,6 @@ public class Event {
         this.venue = venue;
     }
 
-    @DynamoDBAttribute(attributeName = "startDate")
     public String getStartDate() {
         return startDate;
     }
@@ -83,7 +76,6 @@ public class Event {
         this.startDate = startDate;
     }
 
-    @DynamoDBAttribute(attributeName = "endDate")
     public String getEndDate() {
         return endDate;
     }
@@ -92,7 +84,6 @@ public class Event {
         this.endDate = endDate;
     }
 
-    @DynamoDBAttribute(attributeName = "attendanceLimit")
     public Integer getAttendanceLimit() {
         return attendanceLimit;
     }
@@ -101,7 +92,6 @@ public class Event {
         this.attendanceLimit = attendanceLimit;
     }
 
-    @DynamoDBAttribute(attributeName = "emergencyContactNo")
     public String getEmergencyContactNo() {
         return emergencyContactNo;
     }
@@ -110,7 +100,6 @@ public class Event {
         this.emergencyContactNo = emergencyContactNo;
     }
 
-    @DynamoDBAttribute(attributeName = "emergencyContactName")
     public String getEmergencyContactName() {
         return emergencyContactName;
     }

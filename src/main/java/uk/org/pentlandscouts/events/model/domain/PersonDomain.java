@@ -1,13 +1,6 @@
 package uk.org.pentlandscouts.events.model.domain;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import org.springframework.data.annotation.Id;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
-import uk.org.pentlandscouts.events.utils.EventUtils;
-
 import java.util.Objects;
 
 public class PersonDomain implements Comparable<PersonDomain>{

@@ -1,6 +1,5 @@
 package uk.org.pentlandscouts.events.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import org.springframework.data.annotation.Id;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 import uk.org.pentlandscouts.events.utils.EventUtils;
@@ -8,7 +7,6 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import java.util.Objects;
 
 @DynamoDbBean
-@DynamoDBTable(tableName = "Person")
 public class Person implements Comparable<Person>{
 
 
@@ -71,7 +69,6 @@ public class Person implements Comparable<Person>{
     }
 
     @DynamoDbPartitionKey
-    @DynamoDBHashKey(attributeName = "uid")
     public String getUid() {
         return uid;
     }
@@ -80,7 +77,7 @@ public class Person implements Comparable<Person>{
         this.uid = uid;
     }
 
-    @DynamoDBAttribute(attributeName = "sortKey")
+    @DynamoDbSortKey
     public String getSortKey() {
         return sortKey;
     }
@@ -90,8 +87,6 @@ public class Person implements Comparable<Person>{
     }
 
 
-    @DynamoDBAttribute(attributeName = "firstName")
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "firstname-lastname-index", attributeName = "firstName")
     @DynamoDbSecondarySortKey(indexNames = "firstname-lastname-index")
     public String getFirstName() {
         return firstName;
@@ -101,8 +96,6 @@ public class Person implements Comparable<Person>{
         this.firstName = firstName;
     }
 
-    @DynamoDBAttribute(attributeName = "lastName")
-    @DynamoDBIndexHashKey(globalSecondaryIndexName = "firstname-lastname-index", attributeName = "lastName")
     @DynamoDbSecondaryPartitionKey(indexNames = "firstname-lastname-index")
     public String getLastName() {
         return lastName;
@@ -112,7 +105,6 @@ public class Person implements Comparable<Person>{
         this.lastName = lastName;
     }
 
-    @DynamoDBAttribute(attributeName = "dob")
     public String getDob() {
         return dob;
     }
@@ -121,7 +113,6 @@ public class Person implements Comparable<Person>{
         this.dob = dob;
     }
 
-    @DynamoDBAttribute(attributeName = "scoutSection")
     public String getScoutSection() {
         return scoutSection;
     }
@@ -130,7 +121,6 @@ public class Person implements Comparable<Person>{
         this.scoutSection = scoutSection;
     }
 
-    @DynamoDBAttribute(attributeName = "sectionName")
     public String getSectionName() {
         return sectionName;
     }
@@ -139,7 +129,6 @@ public class Person implements Comparable<Person>{
         this.sectionName = sectionName;
     }
 
-    @DynamoDBAttribute(attributeName = "scoutGroup")
     public String getScoutGroup() {
         return scoutGroup;
     }
@@ -148,7 +137,6 @@ public class Person implements Comparable<Person>{
         this.scoutGroup = scoutGroup;
     }
 
-    @DynamoDBAttribute(attributeName = "position")
     public String getPosition() {
         return position;
     }
@@ -157,7 +145,6 @@ public class Person implements Comparable<Person>{
         this.position = position;
     }
 
-    @DynamoDBAttribute(attributeName = "medicine")
     public String getMedicine() {
         return medicine;
     }
@@ -166,7 +153,6 @@ public class Person implements Comparable<Person>{
         this.medicine = medicine;
     }
 
-    @DynamoDBAttribute(attributeName = "allergies")
     public String getAllergies() {
         return allergies;
     }
@@ -175,7 +161,6 @@ public class Person implements Comparable<Person>{
         this.allergies = allergies;
     }
 
-    @DynamoDBAttribute(attributeName = "contactEmail")
     public String getContactEmail() {
         return contactEmail;
     }
@@ -184,7 +169,6 @@ public class Person implements Comparable<Person>{
         this.contactEmail = contactEmail;
     }
 
-    @DynamoDBAttribute(attributeName = "contactPhoneNo")
     public String getContactPhoneNo() {
         return contactPhoneNo;
     }
@@ -193,7 +177,6 @@ public class Person implements Comparable<Person>{
         this.contactPhoneNo = contactPhoneNo;
     }
 
-    @DynamoDBAttribute(attributeName = "emergencyContactName")
     public String getEmergencyContactName() {
         return emergencyContactName;
     }
@@ -202,7 +185,6 @@ public class Person implements Comparable<Person>{
         this.emergencyContactName = emergencyContactName;
     }
 
-    @DynamoDBAttribute(attributeName = "emergencyContactNo")
     public String getEmergencyContactNo() {
         return emergencyContactNo;
     }
@@ -211,7 +193,6 @@ public class Person implements Comparable<Person>{
         this.emergencyContactNo = emergencyContactNo;
     }
 
-    @DynamoDBAttribute(attributeName = "emergencyRelationship")
     public String getEmergencyRelationship() {
         return emergencyRelationship;
     }
@@ -220,7 +201,6 @@ public class Person implements Comparable<Person>{
         this.emergencyRelationship = emergencyRelationship;
     }
 
-    @DynamoDBAttribute(attributeName = "dietary")
     public String getDietary() {
         return dietary;
     }
@@ -229,7 +209,6 @@ public class Person implements Comparable<Person>{
         this.dietary = dietary;
     }
 
-    @DynamoDBAttribute(attributeName = "photoPermission")
     public String getPhotoPermission() {
         return photoPermission;
     }
@@ -238,7 +217,6 @@ public class Person implements Comparable<Person>{
         this.photoPermission = photoPermission;
     }
 
-    @DynamoDBAttribute(attributeName = "subCamp")
     public String getSubCamp() {
         return subCamp;
     }
@@ -291,5 +269,3 @@ public int compareTo(Person obj)
         return this.sortKey.compareTo(obj.sortKey);
         }
 }
-
-
