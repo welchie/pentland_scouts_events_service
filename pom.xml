@@ -40,7 +40,7 @@
         <aws-java-sdk.version>1.12.797</aws-java-sdk.version>
         <spring-data-dynamodb.version>5.1.0</spring-data-dynamodb.version>
         <junit.version>4.13.2</junit.version>
-        <junit.jupiter.version>5.9.3</junit.jupiter.version>
+        <junit.jupiter.version>5.11.0</junit.jupiter.version>
         <spring-data-releasetrain.version>Neumann-SR9</spring-data-releasetrain.version>
         <com.amazonaws.DynamoDBLocal.version>2.0.0</com.amazonaws.DynamoDBLocal.version>
         <software.amazon.awssdk.version>2.46.19</software.amazon.awssdk.version>
@@ -80,6 +80,18 @@
             <url>https://hub.docker.com/welchie99/${project.artifactId}</url>
         </repository>
     </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->

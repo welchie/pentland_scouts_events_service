@@ -8,6 +8,16 @@ The following dependencies have been upgraded in the second stage of the depende
 | **AWS SDK v2 (Enhanced / Profiles)** | `software.amazon.awssdk` | `dynamodb-enhanced` / `profiles` | `2.20.110` | `2.46.19` | AWS SDK v2 client and profile configuration updates. |
 | **H2 Database Engine** | `com.h2database` | `h2` | `2.2.220` | `2.4.240` | Upgraded in-memory testing database engine. |
 | **Apache POI (Excel utility)** | `org.apache.poi` | `poi` / `poi-ooxml` | `5.2.5` | `5.5.1` | Stable release updates for Excel sheet reading/writing utilities. |
+| **JUnit Jupiter (BOM)** | `org.junit` | `junit-bom` | `5.9.3` | `5.11.0` | Imported JUnit BOM to manage cohesive Platform and Engine versions. |
+
+---
+
+## Code Quality & Improvements
+
+1. **Deprecated Constructor Fix**:
+   - Refactored `new Integer(i)` to auto-boxed `i` inside [ExcelUtils.java](file:///Users/chriswelch/workspace/scouts/scouts_events_service/pentland_scouts_events_service/src/main/java/uk/org/pentlandscouts/events/utils/ExcelUtils.java) to resolve compilation deprecation warnings.
+2. **JUnit Dependency Alignment**:
+   - Added a `<dependencyManagement>` section in [pom.xml](file:///Users/chriswelch/workspace/scouts/scouts_events_service/pentland_scouts_events_service/pom.xml) using `junit-bom`. This safely updates the core testing framework to `5.11.0` without API/platform mismatch errors.
 
 ---
 
@@ -22,3 +32,4 @@ To validate these changes:
 ./mvnw clean test
 ```
 *Status: Build Success (All tests passed).*
+
