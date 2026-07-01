@@ -24,7 +24,7 @@ The following dependencies have been upgraded in the second stage of the depende
 ## Validation & Testing
 
 To validate these changes:
-1. **Integration Test Created**: Added a new test class `Stage2IntegrationTest` with two test cases:
+1. **Integration Test Created**: Added a new test class `ExcelAndDatabaseIntegrationTest` with two test cases:
    - `testApachePoiExcelReadWrite`: Verifies writing and reading Excel files via Apache POI `XSSFWorkbook` using the updated `5.5.1` dependencies.
    - `testH2DatabaseConnection`: Establishes an H2 in-memory connection and performs a schema creation, data insertion, and retrieval operation using H2 `2.4.240`.
 2. **Execution**: Ran Maven test suite to ensure compile and test execution passes.

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Stage2IntegrationTest {
+public class ExcelAndDatabaseIntegrationTest {
 
     @Test
     public void testApachePoiExcelReadWrite() throws Exception {
