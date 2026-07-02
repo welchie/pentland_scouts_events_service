@@ -75,4 +75,17 @@ public class EventAttendeeRepository extends AbstractDynamoDbRepository<EventAtt
                 "event-person-index"
         ).items().stream().toList();
     }
+
+    public List<EventAttendee> findByEventUidAndCheckedIn(String eventUid, String checkedIn) {
+        return dynamoDbTemplate.scan(
+                ScanEnhancedRequest.builder()
+                        .filterExpression(Expression.builder()
+                                .expression("eventUid = :eventVal AND checkedIn = :checkedVal")
+                                .putExpressionValue(":eventVal", AttributeValue.builder().s(eventUid).build())
+                                .putExpressionValue(":checkedVal", AttributeValue.builder().s(checkedIn).build())
+                                .build())
+                        .build(),
+                EventAttendee.class
+        ).items().stream().toList();
+    }
 }

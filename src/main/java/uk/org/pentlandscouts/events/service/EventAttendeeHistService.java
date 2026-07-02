@@ -54,10 +54,7 @@ public class EventAttendeeHistService {
 
     public List<EventAttendeeHist> findByEventUidAndCheckedIn(String eventUid,String checkedIn) {
         logger.info("Returning all EventAttendeeHist by eventUId {} that are checkedIn {}", eventUid, checkedIn);
-        List<EventAttendeeHist> eventAttendees = repo.findByEventUid(eventUid)
-                .stream()
-                .filter(e -> e.getCheckedIn() == checkedIn).toList();
-        return eventAttendees;
+        return repo.findByEventUidAndCheckedIn(eventUid, checkedIn);
     }
 
     public EventAttendeeHist createRecord(EventAttendeeHist eventAttendeeHist) throws EventAttendeeException {

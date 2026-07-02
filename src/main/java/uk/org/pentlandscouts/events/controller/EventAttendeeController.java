@@ -12,6 +12,10 @@ import uk.org.pentlandscouts.events.model.EventAttendee;
 import uk.org.pentlandscouts.events.model.EventAttendeeHist;
 import uk.org.pentlandscouts.events.service.EventAttendeeHistService;
 import uk.org.pentlandscouts.events.service.EventAttendeeService;
+import uk.org.pentlandscouts.events.service.PersonService;
+import uk.org.pentlandscouts.events.service.EventService;
+import uk.org.pentlandscouts.events.model.Person;
+import uk.org.pentlandscouts.events.model.Event;
 import uk.org.pentlandscouts.events.utils.EventUtils;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +33,10 @@ public class EventAttendeeController {
     EventAttendeeService service;
     @Autowired
     EventAttendeeHistService histService;
+    @Autowired
+    PersonService personService;
+    @Autowired
+    EventService eventService;
 
     private static final String TABLE_NAME = "EventAttendee";
     private static final String ERROR_TITLE = "errors";
@@ -68,12 +76,12 @@ public class EventAttendeeController {
 
     @GetMapping("/findbyevent")
     ResponseEntity<Object> findByEventUid(
-            @RequestParam(value = "enventuid") String eventuid) {
+            @RequestParam(value = "eventUid") String eventUid) {
         Map<String, List<EventAttendee>> response = new HashMap<>(1);
         try {
-            if (!eventuid.isEmpty()) {
+            if (!eventUid.isEmpty()) {
 
-                List<EventAttendee> eventAttendeeList = service.findByEventUid(eventuid);
+                List<EventAttendee> eventAttendeeList = service.findByEventUid(eventUid);
                 if (eventAttendeeList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
@@ -178,25 +186,32 @@ public class EventAttendeeController {
     }
 
     @PostMapping("/update")
-    public EventAttendee update(@RequestBody EventAttendee eventAttendee) {
+    public ResponseEntity<Object> update(@RequestBody EventAttendee eventAttendee) {
+        Map<String, Object> response = new HashMap<>(1);
         try {
-
             if (eventAttendee != null && !eventAttendee.getUid().isEmpty()) {
                 //Find if the record exists
-                List<EventAttendee> currentEvent = service.findByEventUidAndPersonUid(eventAttendee.getUid(),eventAttendee.getPersonUid());
+                List<EventAttendee> currentEvent = service.findByUid(eventAttendee.getUid());
                 if (!currentEvent.isEmpty()) {
-                    return service.update(eventAttendee);
+                    EventAttendee updated = service.update(eventAttendee);
+                    response.put(TABLE_NAME, updated);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
-
                     logger.info("EventAttendee not found in the db: {}. No updates", eventAttendee);
-                    throw new EventAttendeeException("EventAttendee not found in the db: " + eventAttendee + ". No updates");
+                    throw new EventAttendeeNotFoundException("EventAttendee not found in the db: " + eventAttendee.getUid());
                 }
+            } else {
+                return new ResponseEntity<>("Invalid input payload", HttpStatus.BAD_REQUEST);
             }
-        } catch (EventAttendeeException ex) {
+        } catch (EventAttendeeNotFoundException ex) {
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
             logger.error(ex.getMessage());
-        }
-        finally {
-            return eventAttendee;
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -208,7 +223,7 @@ public class EventAttendeeController {
         try {
             if (!uid.isEmpty()) {
                 List<EventAttendee> eventAttendeeList = service.findByUid(uid);
-                if (eventAttendeeList.size() >0 && eventAttendeeList.get(0) == null) {
+                if (eventAttendeeList.isEmpty()) {
                     throw new EventAttendeeNotFoundException(uid);
                 }
 
@@ -254,37 +269,52 @@ public class EventAttendeeController {
             }
 
             List<EventAttendee> eventAttendees = service.findByEventUidAndPersonUid(eventUid, personUid);
+            EventAttendee eventAttendee;
             if (eventAttendees.size() > 0) {
-                EventAttendee eventAttendee = eventAttendees.get(0);
+                eventAttendee = eventAttendees.get(0);
                 if (checkin) {
                     eventAttendee.setCheckedIn("true");
                 } else {
                     eventAttendee.setCheckedIn("false");
                 }
-
                 eventAttendee.setLastUpdated(sdf.format(d));
                 eventAttendee = service.update(eventAttendee);
-
-                Map<String, EventAttendee> response = new HashMap<>(1);
-                response.put(TABLE_NAME, eventAttendee);
-
-                EventAttendeeHist eventHistRecord = new EventAttendeeHist();
-                eventHistRecord.setEventUid(eventAttendee.getEventUid());
-                eventHistRecord.setPersonUid(eventAttendee.getPersonUid());
-                eventHistRecord.setPhotoPermission(eventAttendee.getPhotoPermission());
-                eventHistRecord.setCheckedIn(eventAttendee.getCheckedIn());
-                eventHistRecord.setSortKey(eventAttendee.getSortKey());
-
-                eventHistRecord.setHistDate(sdf.format(d));
-                eventHistRecord.setUid(EventUtils.generateType1UUID().toString());
-                histService.createRecord(eventHistRecord);
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                // Auto-register the person for the event if both records exist
+                List<Person> persons = personService.findByUid(personUid);
+                List<Event> events = eventService.findByUid(eventUid);
+                if (!persons.isEmpty() && !events.isEmpty()) {
+                    Person person = persons.get(0);
+                    eventAttendee = new EventAttendee(eventUid, personUid, person.getPhotoPermission());
+                    if (checkin) {
+                        eventAttendee.setCheckedIn("true");
+                    } else {
+                        eventAttendee.setCheckedIn("false");
+                    }
+                    eventAttendee.setLastUpdated(sdf.format(d));
+                    eventAttendee = service.createRecord(eventAttendee);
+                } else {
+                    return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+                }
             }
+
+            Map<String, EventAttendee> response = new HashMap<>(1);
+            response.put(TABLE_NAME, eventAttendee);
+
+            EventAttendeeHist eventHistRecord = new EventAttendeeHist();
+            eventHistRecord.setEventUid(eventAttendee.getEventUid());
+            eventHistRecord.setPersonUid(eventAttendee.getPersonUid());
+            eventHistRecord.setPhotoPermission(eventAttendee.getPhotoPermission());
+            eventHistRecord.setCheckedIn(eventAttendee.getCheckedIn());
+            eventHistRecord.setSortKey(eventAttendee.getSortKey());
+
+            eventHistRecord.setHistDate(sdf.format(d));
+            eventHistRecord.setUid(EventUtils.generateType1UUID().toString());
+            histService.createRecord(eventHistRecord);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        catch (EventAttendeeException e)
+        catch (Exception e)
         {
             logger.error(e.getMessage());
             Map<String, List<String>> exceptionResponse = new HashMap<>(1);
@@ -294,5 +324,4 @@ public class EventAttendeeController {
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
