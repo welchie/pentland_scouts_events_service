@@ -76,6 +76,20 @@ public class EventAttendeeHistRepository extends AbstractDynamoDbRepository<Even
         ).items().stream().toList();
     }
 
+    public List<EventAttendeeHist> findByEventUidAndCheckedIn(String eventUid, String checkedIn) {
+        return dynamoDbTemplate.scan(
+                ScanEnhancedRequest.builder()
+                        .filterExpression(Expression.builder()
+                                .expression("eventUid = :eventVal AND checkedIn = :checkedVal")
+                                .putExpressionValue(":eventVal", AttributeValue.builder().s(eventUid).build())
+                                .putExpressionValue(":checkedVal", AttributeValue.builder().s(checkedIn).build())
+                                .build())
+                        .build(),
+                EventAttendeeHist.class
+        ).items().stream().toList();
+    }
+
+
     public List<EventAttendeeHist> findByHistDateBetween(String startDate, String endDate) {
         return findAll().stream()
                 .filter(eah -> isDateBetween(eah.getHistDate(), startDate, endDate))

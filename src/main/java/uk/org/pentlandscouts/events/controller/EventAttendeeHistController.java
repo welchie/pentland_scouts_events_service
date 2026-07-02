@@ -64,12 +64,12 @@ public class EventAttendeeHistController {
 
     @GetMapping("/findbyevent")
     ResponseEntity<Object> findByEventUid(
-            @RequestParam(value = "enventuid") String eventuid) {
+            @RequestParam(value = "eventUid") String eventUid) {
         Map<String, List<EventAttendeeHist>> response = new HashMap<>(1);
         try {
-            if (!eventuid.isEmpty()) {
+            if (!eventUid.isEmpty()) {
 
-                List<EventAttendeeHist> eventAttendeeHistList = service.findByEventUid(eventuid);
+                List<EventAttendeeHist> eventAttendeeHistList = service.findByEventUid(eventUid);
                 if (eventAttendeeHistList.isEmpty()) {
                     return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
                 }
@@ -176,25 +176,32 @@ public class EventAttendeeHistController {
     }
 
     @PostMapping("/update")
-    public EventAttendeeHist update(@RequestBody EventAttendeeHist eventAttendeeHist) {
+    public ResponseEntity<Object> update(@RequestBody EventAttendeeHist eventAttendeeHist) {
+        Map<String, Object> response = new HashMap<>(1);
         try {
-
             if (eventAttendeeHist != null && !eventAttendeeHist.getUid().isEmpty()) {
                 //Find if the record exists
-                List<EventAttendeeHist> currentEvent = service.findByEventUidAndPersonUid(eventAttendeeHist.getUid(),eventAttendeeHist.getPersonUid());
+                List<EventAttendeeHist> currentEvent = service.findByUid(eventAttendeeHist.getUid());
                 if (!currentEvent.isEmpty()) {
-                    return service.update(eventAttendeeHist);
+                    EventAttendeeHist updated = service.update(eventAttendeeHist);
+                    response.put(TABLE_NAME, updated);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
-
                     logger.info("EventAttendee not found in the db: {}. No updates", eventAttendeeHist);
-                    throw new EventAttendeeException("EventAttendee not found in the db: " + eventAttendeeHist + ". No updates");
+                    throw new EventAttendeeNotFoundException("EventAttendee not found in the db: " + eventAttendeeHist.getUid());
                 }
+            } else {
+                return new ResponseEntity<>("Invalid input payload", HttpStatus.BAD_REQUEST);
             }
-        } catch (EventAttendeeException ex) {
+        } catch (EventAttendeeNotFoundException ex) {
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
             logger.error(ex.getMessage());
-        }
-        finally {
-            return eventAttendeeHist;
+            Map<String, List<String>> exceptionResponse = new HashMap<>(1);
+            List<String> errors = new ArrayList<>();
+            errors.add(ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage());
+            exceptionResponse.put(ERROR_TITLE, errors);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -206,7 +213,7 @@ public class EventAttendeeHistController {
         try {
             if (!uid.isEmpty()) {
                 List<EventAttendeeHist> eventAttendeeHistList = service.findByUid(uid);
-                if (eventAttendeeHistList.size() >0 && eventAttendeeHistList.get(0) == null) {
+                if (eventAttendeeHistList.isEmpty()) {
                     throw new EventAttendeeNotFoundException(uid);
                 }
 

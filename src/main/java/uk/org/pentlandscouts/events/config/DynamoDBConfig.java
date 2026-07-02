@@ -47,4 +47,22 @@ public class DynamoDBConfig {
             }
         };
     }
+
+    @Bean
+    public software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient dynamoDbEnhancedClient(DynamoDbClient dynamoDbClient) {
+        return software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(dynamoDbClient)
+                .build();
+    }
+
+    @Bean
+    public io.awspring.cloud.dynamodb.DynamoDbTemplate dynamoDbTemplate(
+            software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient dynamoDbEnhancedClient,
+            io.awspring.cloud.dynamodb.DynamoDbTableNameResolver dynamoDbTableNameResolver) {
+        return new io.awspring.cloud.dynamodb.DynamoDbTemplate(
+                dynamoDbEnhancedClient,
+                new io.awspring.cloud.dynamodb.DefaultDynamoDbTableSchemaResolver(),
+                dynamoDbTableNameResolver
+        );
+    }
 }
