@@ -247,19 +247,15 @@ public class EventAttendeeController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
         Date d = new Date();
-        EventAttendee eventAttendee = new EventAttendee();
         try {
-            //Check for input values
             if ((eventUid.isEmpty() || eventUid.equals("")) &&
                     (personUid.isEmpty() || personUid.equals(""))) {
                 throw new EventAttendeeNotFoundException("Event UID: " + eventUid + " personUid: " + personUid);
             }
 
-            //Find the EventAttendee Record
             List<EventAttendee> eventAttendees = service.findByEventUidAndPersonUid(eventUid, personUid);
             if (eventAttendees.size() > 0) {
-                //Update the record with the value for Checkin
-                eventAttendee = eventAttendees.get(0);
+                EventAttendee eventAttendee = eventAttendees.get(0);
                 if (checkin) {
                     eventAttendee.setCheckedIn("true");
                 } else {
@@ -267,13 +263,11 @@ public class EventAttendeeController {
                 }
 
                 eventAttendee.setLastUpdated(sdf.format(d));
-
                 eventAttendee = service.update(eventAttendee);
 
                 Map<String, EventAttendee> response = new HashMap<>(1);
                 response.put(TABLE_NAME, eventAttendee);
 
-                //Record the change in the EventAttendeeHist table
                 EventAttendeeHist eventHistRecord = new EventAttendeeHist();
                 eventHistRecord.setEventUid(eventAttendee.getEventUid());
                 eventHistRecord.setPersonUid(eventAttendee.getPersonUid());
@@ -281,14 +275,13 @@ public class EventAttendeeController {
                 eventHistRecord.setCheckedIn(eventAttendee.getCheckedIn());
                 eventHistRecord.setSortKey(eventAttendee.getSortKey());
 
-
                 eventHistRecord.setHistDate(sdf.format(d));
                 eventHistRecord.setUid(EventUtils.generateType1UUID().toString());
                 histService.createRecord(eventHistRecord);
 
-
-
                 return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
             }
         }
         catch (EventAttendeeException e)
@@ -300,12 +293,6 @@ public class EventAttendeeController {
             exceptionResponse.put(ERROR_TITLE, errors);
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    finally {
-            Map<String, EventAttendee> response = new HashMap<>(1);
-            response.put(TABLE_NAME, eventAttendee);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-
     }
 
 }
