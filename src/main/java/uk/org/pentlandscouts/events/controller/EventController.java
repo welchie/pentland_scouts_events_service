@@ -228,7 +228,7 @@ public class EventController {
         try {
             if (!uid.isEmpty()) {
                 List<Event> eventList = service.findByUid(uid);
-                if (eventList.size() >0 && eventList.get(0) == null) {
+                if (eventList.isEmpty()) {
                     throw new EventNotFoundException(uid);
                 }
 
