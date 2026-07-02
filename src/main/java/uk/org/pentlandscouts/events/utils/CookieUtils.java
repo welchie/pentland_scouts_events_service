@@ -30,7 +30,8 @@ public class CookieUtils {
     public void setCookie(String name, String value, int expiryInMinutes) {
         int expiresInSeconds = expiryInMinutes * 60 * 60;
         Cookie cookie = new Cookie(name, value);
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
         cookie.setPath(restSecProps.getCookieProps().getPath());
         cookie.setDomain(restSecProps.getCookieProps().getDomain());
         cookie.setMaxAge(expiresInSeconds);
@@ -40,8 +41,8 @@ public class CookieUtils {
     public void setSecureCookie(String name, String value, int expiryInMinutes) {
         int expiresInSeconds = expiryInMinutes * 60 * 60;
         Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(restSecProps.getCookieProps().isHttpOnly());
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
         cookie.setPath(restSecProps.getCookieProps().getPath());
         cookie.setDomain(restSecProps.getCookieProps().getDomain());
         cookie.setMaxAge(expiresInSeconds);
@@ -56,8 +57,8 @@ public class CookieUtils {
     public void deleteSecureCookie(String name) {
         int expiresInSeconds = 0;
         Cookie cookie = new Cookie(name, null);
-        cookie.setHttpOnly(restSecProps.getCookieProps().isHttpOnly());
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
         cookie.setPath(restSecProps.getCookieProps().getPath());
         cookie.setDomain(restSecProps.getCookieProps().getDomain());
         cookie.setMaxAge(expiresInSeconds);
@@ -67,6 +68,8 @@ public class CookieUtils {
     public void deleteCookie(String name) {
         int expiresInSeconds = 0;
         Cookie cookie = new Cookie(name, null);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
         cookie.setPath(restSecProps.getCookieProps().getPath());
         cookie.setDomain(restSecProps.getCookieProps().getDomain());
         cookie.setMaxAge(expiresInSeconds);
