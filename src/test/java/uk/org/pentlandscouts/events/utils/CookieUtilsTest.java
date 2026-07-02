@@ -1,14 +1,14 @@
 package uk.org.pentlandscouts.events.utils;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import uk.org.pentlandscouts.events.model.security.CookieProperties;
 import uk.org.pentlandscouts.events.model.security.SecurityProperties;
 
@@ -18,11 +18,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CookieUtilsTest {
 
-    @Mock
-    private HttpServletRequest httpServletRequest;
-
-    @Mock
-    private HttpServletResponse httpServletResponse;
+    private MockHttpServletRequest httpServletRequest;
+    private MockHttpServletResponse httpServletResponse;
 
     @Mock
     private SecurityProperties restSecProps;
@@ -33,19 +30,17 @@ public class CookieUtilsTest {
     @InjectMocks
     private CookieUtils cookieUtils;
 
-    private Cookie capturedCookie;
-
     @BeforeEach
     public void setUp() {
+        httpServletRequest = new MockHttpServletRequest();
+        httpServletResponse = new MockHttpServletResponse();
+
+        cookieUtils.httpServletRequest = httpServletRequest;
+        cookieUtils.httpServletResponse = httpServletResponse;
+
         lenient().when(restSecProps.getCookieProps()).thenReturn(cookieProps);
         lenient().when(cookieProps.getPath()).thenReturn("/");
         lenient().when(cookieProps.getDomain()).thenReturn("localhost");
-
-        capturedCookie = null;
-        lenient().doAnswer(invocation -> {
-            capturedCookie = invocation.getArgument(0);
-            return null;
-        }).when(httpServletResponse).addCookie(any(Cookie.class));
     }
 
     @Test
@@ -53,7 +48,7 @@ public class CookieUtilsTest {
         Cookie mockCookie = new Cookie("test-cookie", "value");
         mockCookie.setSecure(true);
         mockCookie.setHttpOnly(true);
-        when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{mockCookie});
+        httpServletRequest.setCookies(mockCookie);
 
         Cookie result = cookieUtils.getCookie("test-cookie");
         assertNotNull(result);
@@ -64,26 +59,28 @@ public class CookieUtilsTest {
     public void testSetCookie() {
         cookieUtils.setCookie("test-cookie", "value", 10);
 
-        assertNotNull(capturedCookie);
-        assertEquals("test-cookie", capturedCookie.getName());
-        assertEquals("value", capturedCookie.getValue());
-        assertTrue(capturedCookie.getSecure());
-        assertTrue(capturedCookie.isHttpOnly());
-        assertEquals("/", capturedCookie.getPath());
-        assertEquals("localhost", capturedCookie.getDomain());
-        assertEquals(10 * 60 * 60, capturedCookie.getMaxAge());
+        Cookie captured = httpServletResponse.getCookie("test-cookie");
+        assertNotNull(captured);
+        assertEquals("test-cookie", captured.getName());
+        assertEquals("value", captured.getValue());
+        assertTrue(captured.getSecure());
+        assertTrue(captured.isHttpOnly());
+        assertEquals("/", captured.getPath());
+        assertEquals("localhost", captured.getDomain());
+        assertEquals(10 * 60 * 60, captured.getMaxAge());
     }
 
     @Test
     public void testSetSecureCookieWithExpiry() {
         cookieUtils.setSecureCookie("secure-cookie", "sec-value", 30);
 
-        assertNotNull(capturedCookie);
-        assertEquals("secure-cookie", capturedCookie.getName());
-        assertEquals("sec-value", capturedCookie.getValue());
-        assertTrue(capturedCookie.getSecure());
-        assertTrue(capturedCookie.isHttpOnly());
-        assertEquals(30 * 60 * 60, capturedCookie.getMaxAge());
+        Cookie captured = httpServletResponse.getCookie("secure-cookie");
+        assertNotNull(captured);
+        assertEquals("secure-cookie", captured.getName());
+        assertEquals("sec-value", captured.getValue());
+        assertTrue(captured.getSecure());
+        assertTrue(captured.isHttpOnly());
+        assertEquals(30 * 60 * 60, captured.getMaxAge());
     }
 
     @Test
@@ -92,34 +89,37 @@ public class CookieUtilsTest {
 
         cookieUtils.setSecureCookie("secure-cookie", "sec-value");
 
-        assertNotNull(capturedCookie);
-        assertEquals("secure-cookie", capturedCookie.getName());
-        assertTrue(capturedCookie.getSecure());
-        assertTrue(capturedCookie.isHttpOnly());
-        assertEquals(60 * 60 * 60, capturedCookie.getMaxAge());
+        Cookie captured = httpServletResponse.getCookie("secure-cookie");
+        assertNotNull(captured);
+        assertEquals("secure-cookie", captured.getName());
+        assertTrue(captured.getSecure());
+        assertTrue(captured.isHttpOnly());
+        assertEquals(60 * 60 * 60, captured.getMaxAge());
     }
 
     @Test
     public void testDeleteSecureCookie() {
         cookieUtils.deleteSecureCookie("secure-cookie");
 
-        assertNotNull(capturedCookie);
-        assertEquals("secure-cookie", capturedCookie.getName());
-        assertNull(capturedCookie.getValue());
-        assertTrue(capturedCookie.getSecure());
-        assertTrue(capturedCookie.isHttpOnly());
-        assertEquals(0, capturedCookie.getMaxAge());
+        Cookie captured = httpServletResponse.getCookie("secure-cookie");
+        assertNotNull(captured);
+        assertEquals("secure-cookie", captured.getName());
+        assertNull(captured.getValue());
+        assertTrue(captured.getSecure());
+        assertTrue(captured.isHttpOnly());
+        assertEquals(0, captured.getMaxAge());
     }
 
     @Test
     public void testDeleteCookie() {
         cookieUtils.deleteCookie("test-cookie");
 
-        assertNotNull(capturedCookie);
-        assertEquals("test-cookie", capturedCookie.getName());
-        assertNull(capturedCookie.getValue());
-        assertTrue(capturedCookie.getSecure());
-        assertTrue(capturedCookie.isHttpOnly());
-        assertEquals(0, capturedCookie.getMaxAge());
+        Cookie captured = httpServletResponse.getCookie("test-cookie");
+        assertNotNull(captured);
+        assertEquals("test-cookie", captured.getName());
+        assertNull(captured.getValue());
+        assertTrue(captured.getSecure());
+        assertTrue(captured.isHttpOnly());
+        assertEquals(0, captured.getMaxAge());
     }
 }
