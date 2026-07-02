@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -164,8 +167,9 @@ public class PersonAdminController {
         return "Person table was created";
     }
 
-    @GetMapping(value="/import/people")
-    public ResponseEntity<Object> importPeople(@RequestParam(value = "fileName") String fileName,
+    @PostMapping(value="/import/people")
+    public ResponseEntity<Object> importPeople(@RequestParam(value = "file", required = false) MultipartFile file,
+                                               @RequestParam(value = "fileName", required = false) String fileName,
                                                @RequestParam(value = "eventUid") String eventUid) {
 
         List<Person> personList = new ArrayList<Person>();
@@ -173,9 +177,17 @@ public class PersonAdminController {
         Map<String, List<EventAttendee>> response = new HashMap<>(1);
         List<EventAttendee> results = new ArrayList<>();
 
-        logger.info("Importing people from file: {}...", fileName);
         try {
-            Map<Integer, List<String>> data = excelUtils.importFromExcel(fileName);
+            Map<Integer, List<String>> data;
+            if (file != null && !file.isEmpty()) {
+                logger.info("Importing people from uploaded file: {}...", file.getOriginalFilename());
+                data = excelUtils.importFromExcel(file.getInputStream());
+            } else if (fileName != null && !fileName.isEmpty()) {
+                logger.info("Importing people from local file: {}...", fileName);
+                data = excelUtils.importFromExcel(fileName);
+            } else {
+                return new ResponseEntity<>("Either file or fileName must be provided", HttpStatus.BAD_REQUEST);
+            }
 
 
             for (int i = 1; i < data.size(); i++) {
@@ -196,7 +208,7 @@ public class PersonAdminController {
                  */
 
                 if (!row.isEmpty()) {
-                    if (row.get(0) != " ") {
+                    if (StringUtils.hasText(row.get(0)) && !row.get(0).equals(" ")) {
                         String firstName = row.get(0);
                         String lastName = row.get(1);
                         String dob = row.get(4);

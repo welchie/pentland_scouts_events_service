@@ -25,53 +25,75 @@ public class ExcelUtils {
     private XSSFSheet sheet;
     private List<Person> listPeople;
 
+    private Map<Integer, List<String>> parseWorkbook(Workbook workbook) {
+        Sheet sheet = workbook.getSheetAt(0);
+
+        Map<Integer, List<String>> data = new HashMap<>();
+        int i = 0;  //Skip row 0 that is a header row
+        for (Row row : sheet) {
+            data.put(i, new ArrayList<String>());
+            for (Cell cell : row) {
+                switch (cell.getCellType()) {
+                    case STRING: {
+                        data.get(i).add(cell.getRichStringCellValue().getString().trim());
+                        break;
+                    }
+                    case NUMERIC: {
+                        if (DateUtil.isCellDateFormatted(cell)) {
+                            data.get(i).add(cell.getDateCellValue() + "");
+                        } else {
+                            data.get(i).add(cell.getNumericCellValue() + "");
+                        }
+                        break;
+                    }
+                    case BOOLEAN: {
+                        data.get(i).add(cell.getBooleanCellValue() + "");
+                        break;
+                    }
+                    case FORMULA: {
+                        data.get(i).add(cell.getCellFormula() + "");
+                        break;
+                    }
+                    default:
+                        data.get(i).add(" ");
+                }
+            }
+            i++;
+        }
+        return data;
+    }
+
     public Map<Integer, List<String>> importFromExcel(String fileName) throws FileNotFoundException
     {
         try {
-            //InputStream file = getFileFromResourceAsStream(fileName);
-            FileInputStream file = new FileInputStream(new File(fileName));
-            Workbook workbook = new XSSFWorkbook(file);
-
-            Sheet sheet = workbook.getSheetAt(0);
-
-            Map<Integer, List<String>> data = new HashMap<>();
-            int i = 0;  //Skip row 0 that is a header row
-            for (Row row : sheet) {
-                data.put(i, new ArrayList<String>());
-                for (Cell cell : row) {
-                    switch (cell.getCellType()) {
-                        case STRING: {
-                            data.get(i).add(cell.getRichStringCellValue().getString().trim());
-                            break;
-                        }
-                        case NUMERIC: {
-                            if (DateUtil.isCellDateFormatted(cell)) {
-                                data.get(i).add(cell.getDateCellValue() + "");
-                            } else {
-                                data.get(i).add(cell.getNumericCellValue() + "");
-                            }
-                            ;
-
-                            break;
-                        }
-                        case BOOLEAN: {
-                            data.get(i).add(cell.getBooleanCellValue() + "");
-                            break;
-                        }
-                        case FORMULA: {
-                            data.get(i).add(cell.getCellFormula() + "");
-                            break;
-                        }
-                        default:
-                            data.get(i).add(" ");
-                    }
-                }
-                i++;
+            if (fileName == null) {
+                throw new IllegalArgumentException("File name cannot be null");
             }
-            return data;
+            File fileObj = new File(fileName);
+            File baseDir = new File(".").getCanonicalFile();
+            if (!fileObj.getCanonicalFile().toPath().startsWith(baseDir.toPath())) {
+                throw new IllegalArgumentException("Invalid file path: path traversal detected");
+            }
+
+            try (FileInputStream file = new FileInputStream(fileObj);
+                 Workbook workbook = new XSSFWorkbook(file)) {
+                return parseWorkbook(workbook);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to import from file: " + fileName, e);
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+    }
+
+    public Map<Integer, List<String>> importFromExcel(InputStream inputStream) {
+        try {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Input stream cannot be null");
+            }
+            try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+                return parseWorkbook(workbook);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read Excel data from input stream", e);
         }
     }
 
