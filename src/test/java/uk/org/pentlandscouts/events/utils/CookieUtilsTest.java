@@ -44,6 +44,8 @@ public class CookieUtilsTest {
     @Test
     public void testGetCookie() {
         Cookie mockCookie = new Cookie("test-cookie", "value");
+        mockCookie.setSecure(true);
+        mockCookie.setHttpOnly(true);
         when(httpServletRequest.getCookies()).thenReturn(new Cookie[]{mockCookie});
 
         Cookie result = cookieUtils.getCookie("test-cookie");
