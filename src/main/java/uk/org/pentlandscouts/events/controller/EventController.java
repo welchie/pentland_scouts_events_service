@@ -215,9 +215,7 @@ public class EventController {
         } catch (EventException ex) {
             logger.error(ex.getMessage());
         }
-        finally {
-            return updEvent;
-        }
+        return updEvent;
     }
 
     @DeleteMapping("/{uid}")

@@ -292,11 +292,12 @@ public class PersonAdminController {
             }
         } catch (FileNotFoundException e) {
             logger.error("File name found {} : {}", fileName, e.getMessage());
+        } catch (java.io.IOException e) {
+            logger.error("Error importing people: {}", e.getMessage());
         }
-        finally {
-            response.put(EVENT_ATTENDEES_TITLE,results);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+
+        response.put(EVENT_ATTENDEES_TITLE, results);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/export/people/excel/all")

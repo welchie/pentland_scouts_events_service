@@ -146,6 +146,59 @@ public class EventAttendeeControllerTest {
     }
 
     @Test
+    public void testFindAll() throws Exception {
+        EventAttendee attendee = new EventAttendee("event-1", "person-1", "true");
+        attendee.setUid("attendee-1");
+
+        when(service.findAll()).thenReturn(Collections.singletonList(attendee));
+
+        mockMvc.perform(get("/eventattendee/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.EventAttendee[0].uid").value("attendee-1"));
+    }
+
+    @Test
+    public void testFindByPerson() throws Exception {
+        EventAttendee attendee = new EventAttendee("event-1", "person-1", "true");
+        attendee.setUid("attendee-1");
+
+        when(service.findByPersonUid("person-1")).thenReturn(Collections.singletonList(attendee));
+
+        mockMvc.perform(get("/eventattendee/findbyperson").param("personuid", "person-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.EventAttendee[0].uid").value("attendee-1"));
+    }
+
+    @Test
+    public void testFindByEventAndCheckedIn() throws Exception {
+        EventAttendee attendee = new EventAttendee("event-1", "person-1", "true");
+        attendee.setUid("attendee-1");
+
+        when(service.findByEventUidAndCheckedIn("event-1", "true")).thenReturn(Collections.singletonList(attendee));
+
+        mockMvc.perform(get("/eventattendee/find")
+                .param("eventUid", "event-1")
+                .param("checkedIn", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.EventAttendee[0].uid").value("attendee-1"));
+    }
+
+    @Test
+    public void testCreateAttendeeSuccess() throws Exception {
+        EventAttendee attendee = new EventAttendee("event-1", "person-1", "true");
+        attendee.setUid("attendee-1");
+
+        when(service.findByEventUidAndPersonUid("event-1", "person-1")).thenReturn(Collections.emptyList());
+        when(service.createRecord(any(EventAttendee.class))).thenReturn(attendee);
+
+        mockMvc.perform(post("/eventattendee/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"eventUid\":\"event-1\",\"personUid\":\"person-1\",\"photoPermission\":\"true\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.EventAttendee.uid").value("attendee-1"));
+    }
+
+    @Test
     public void testFindByEventSuccess() throws Exception {
         EventAttendee attendee = new EventAttendee("event-1", "person-1", "true");
         attendee.setUid("attendee-1");
@@ -155,5 +208,120 @@ public class EventAttendeeControllerTest {
         mockMvc.perform(get("/eventattendee/findbyevent").param("eventUid", "event-1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.EventAttendee[0].uid").value("attendee-1"));
+    }
+
+    @Test
+    public void testFindAllNotFound() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/eventattendee/all"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFindAllException() throws Exception {
+        when(service.findAll()).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(get("/eventattendee/all"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testFindByEventUidNotFound() throws Exception {
+        when(service.findByEventUid("event-1")).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/eventattendee/findbyevent").param("eventUid", "event-1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFindByEventUidException() throws Exception {
+        when(service.findByEventUid("event-1")).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(get("/eventattendee/findbyevent").param("eventUid", "event-1"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testFindByPersonUidNotFound() throws Exception {
+        when(service.findByPersonUid("person-1")).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/eventattendee/findbyperson").param("personuid", "person-1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFindByPersonUidException() throws Exception {
+        when(service.findByPersonUid("person-1")).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(get("/eventattendee/findbyperson").param("personuid", "person-1"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testFindByEventUidAndCheckedInNotFound() throws Exception {
+        when(service.findByEventUidAndCheckedIn("event-1", "true")).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/eventattendee/find")
+                .param("eventUid", "event-1")
+                .param("checkedIn", "true"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testFindByEventUidAndCheckedInException() throws Exception {
+        when(service.findByEventUidAndCheckedIn("event-1", "true")).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(get("/eventattendee/find")
+                .param("eventUid", "event-1")
+                .param("checkedIn", "true"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testCreateAttendeeException() throws Exception {
+        when(service.findByEventUidAndPersonUid(any(), any())).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(post("/eventattendee/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"eventUid\":\"event-1\",\"personUid\":\"person-1\"}"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testUpdateInvalidInput() throws Exception {
+        mockMvc.perform(post("/eventattendee/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"eventUid\":\"event-1\",\"personUid\":\"person-1\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testUpdateException() throws Exception {
+        when(service.findByUid("attendee-1")).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(post("/eventattendee/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"uid\":\"attendee-1\",\"eventUid\":\"event-1\",\"personUid\":\"person-1\"}"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testRemoveException() throws Exception {
+        when(service.findByUid("attendee-1")).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(delete("/eventattendee/attendee-1"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void testCheckinException() throws Exception {
+        when(service.findByEventUidAndPersonUid(any(), any())).thenThrow(new RuntimeException("database error"));
+
+        mockMvc.perform(get("/eventattendee/checkin")
+                .param("eventUID", "event-1")
+                .param("personUID", "person-1")
+                .param("checkIn", "true"))
+                .andExpect(status().isInternalServerError());
     }
 }

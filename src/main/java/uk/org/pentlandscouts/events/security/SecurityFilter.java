@@ -38,6 +38,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     SecurityProperties securityProps;
 
+    protected FirebaseAuth getFirebaseAuth() {
+        return FirebaseAuth.getInstance();
+    }
+
     private void verifyToken(HttpServletRequest request) {
         String session = null;
         FirebaseToken decodedToken = null;
@@ -49,12 +53,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         try {
             if (sessionCookie != null) {
                 session = sessionCookie.getValue();
-                decodedToken = FirebaseAuth.getInstance().verifySessionCookie(session,
+                decodedToken = getFirebaseAuth().verifySessionCookie(session,
                         securityProps.getFirebaseProps().isEnableCheckSessionRevoked());
                 type = Credentials.CredentialType.SESSION;
             } else if (!strictServerSessionEnabled) {
                 if (token != null && !token.equalsIgnoreCase("undefined")) {
-                    decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+                    decodedToken = getFirebaseAuth().verifyIdToken(token);
                     type = Credentials.CredentialType.ID_TOKEN;
                 }
             }
