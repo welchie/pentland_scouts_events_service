@@ -326,9 +326,7 @@ public class PersonController {
         } catch (PersonException ex) {
             logger.error(ex.getMessage());
         }
-        finally {
-            return updPerson;
-        }
+        return updPerson;
     }
 
     @DeleteMapping("/{uid}")

@@ -275,6 +275,7 @@ public class EventAttendeeHistController {
                 response.put(TABLE_NAME, eventAttendeeHist);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            return new ResponseEntity<>(NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         catch (EventAttendeeException e)
         {
@@ -284,11 +285,6 @@ public class EventAttendeeHistController {
             errors.add(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
             exceptionResponse.put(ERROR_TITLE, errors);
             return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    finally {
-            Map<String, EventAttendeeHist> response = new HashMap<>(1);
-            response.put(TABLE_NAME, eventAttendeeHist);
-            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
     }

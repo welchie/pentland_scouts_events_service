@@ -47,7 +47,7 @@ public class MedicalDetailsController {
             //Lookup the DB for an existing record
             List<Person> lookUpPerson = personService.findByUid(uid);
             //If record is found then add medical details
-            if (lookUpPerson.get(0) != null) {
+            if (!lookUpPerson.isEmpty() && lookUpPerson.get(0) != null) {
                 //Person found add medical details
 
                 Person person = lookUpPerson.get(0);

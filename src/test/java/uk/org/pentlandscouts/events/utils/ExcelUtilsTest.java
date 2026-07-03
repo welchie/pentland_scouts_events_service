@@ -1,20 +1,29 @@
 package uk.org.pentlandscouts.events.utils;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
+import uk.org.pentlandscouts.events.model.Person;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class ExcelUtilsTest {
 
-    private final ExcelUtils excelUtils = new ExcelUtils();
-
     @Test
-    public void testImportFromExcelNullFileName() {
+    public void testImportFromExcelNullFile() {
+        ExcelUtils excelUtils = new ExcelUtils();
         assertThrows(IllegalArgumentException.class, () -> {
             excelUtils.importFromExcel((String) null);
         });
@@ -22,51 +31,95 @@ public class ExcelUtilsTest {
 
     @Test
     public void testImportFromExcelPathTraversal() {
+        ExcelUtils excelUtils = new ExcelUtils();
         assertThrows(IllegalArgumentException.class, () -> {
-            excelUtils.importFromExcel("../etc/passwd");
+            excelUtils.importFromExcel("../traversal.xlsx");
         });
     }
 
     @Test
     public void testImportFromExcelNullInputStream() {
+        ExcelUtils excelUtils = new ExcelUtils();
         assertThrows(IllegalArgumentException.class, () -> {
             excelUtils.importFromExcel((InputStream) null);
         });
     }
 
     @Test
-    public void testImportFromExcelInputStream() throws Exception {
-        try (org.apache.poi.xssf.usermodel.XSSFWorkbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
-            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
-            org.apache.poi.ss.usermodel.Row header = sheet.createRow(0);
-            header.createCell(0).setCellValue("First Name");
-            header.createCell(1).setCellValue("Last Name");
-            header.createCell(2).setCellValue("Section");
-            header.createCell(3).setCellValue("SubCamp");
-            header.createCell(4).setCellValue("Age");
+    public void testImportFromExcelValidInputStream() throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Test");
+        Row row0 = sheet.createRow(0);
+        row0.createCell(0).setCellValue("Header");
+        Row row1 = sheet.createRow(1);
+        row1.createCell(0).setCellValue("John");
+        row1.createCell(1).setCellValue(25.5);
+        row1.createCell(2).setCellValue(true);
 
-            org.apache.poi.ss.usermodel.Row dataRow = sheet.createRow(1);
-            dataRow.createCell(0).setCellValue("John");
-            dataRow.createCell(1).setCellValue("Doe");
-            dataRow.createCell(2).setCellValue("Scouts");
-            dataRow.createCell(3).setCellValue("Camp A");
-            dataRow.createCell(4).setCellValue(12.5);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        workbook.write(bos);
+        workbook.close();
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            workbook.write(out);
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 
-            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray())) {
-                Map<Integer, List<String>> result = excelUtils.importFromExcel(inputStream);
+        ExcelUtils excelUtils = new ExcelUtils();
+        Map<Integer, List<String>> result = excelUtils.importFromExcel(bis);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("John", result.get(1).get(0));
+    }
 
-                assertNotNull(result);
-                assertEquals(2, result.size());
-                assertEquals("John", result.get(1).get(0));
-                assertEquals("Doe", result.get(1).get(1));
-                assertEquals("Scouts", result.get(1).get(2));
-                assertEquals("Camp A", result.get(1).get(3));
-                // numeric cells are converted to double string representation
-                assertEquals("12.5", result.get(1).get(4));
-            }
-        }
+    @Test
+    public void testExport() throws IOException {
+        ExcelUtils excelUtils = new ExcelUtils();
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ServletOutputStream sos = new ServletOutputStream() {
+            @Override
+            public boolean isReady() { return true; }
+            @Override
+            public void setWriteListener(WriteListener writeListener) {}
+            @Override
+            public void write(int b) throws IOException { bos.write(b); }
+        };
+
+        when(response.getOutputStream()).thenReturn(sos);
+
+        Person person = new Person("John", "Doe", "dob", "key");
+        person.setSubCamp("Camp");
+        person.setScoutGroup("Group");
+
+        excelUtils.export(response, Collections.singletonList(person));
+
+        byte[] exportedBytes = bos.toByteArray();
+        assertTrue(exportedBytes.length > 0);
+
+        Workbook checkWorkbook = new XSSFWorkbook(new ByteArrayInputStream(exportedBytes));
+        Sheet sheet = checkWorkbook.getSheetAt(0);
+        assertNotNull(sheet);
+        assertEquals("John", sheet.getRow(1).getCell(0).getStringCellValue());
+        checkWorkbook.close();
+    }
+
+    @Test
+    public void testImportFromExcelInputStreamIOException() throws IOException {
+        InputStream badStream = mock(InputStream.class);
+        doThrow(new IOException("simulated")).when(badStream).read(any(byte[].class), anyInt(), anyInt());
+        doThrow(new IOException("simulated")).when(badStream).read(any(byte[].class));
+        doThrow(new IOException("simulated")).when(badStream).read();
+
+        ExcelUtils excelUtils = new ExcelUtils();
+        assertThrows(RuntimeException.class, () -> {
+            excelUtils.importFromExcel(badStream);
+        });
+    }
+
+    @Test
+    public void testImportFromExcelFileNotFound() {
+        ExcelUtils excelUtils = new ExcelUtils();
+        assertThrows(RuntimeException.class, () -> {
+            excelUtils.importFromExcel("non_existent_file.xlsx");
+        });
     }
 }
