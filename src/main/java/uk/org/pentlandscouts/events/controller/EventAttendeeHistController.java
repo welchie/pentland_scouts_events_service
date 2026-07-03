@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/eventattendeehist")
 
 public class EventAttendeeHistController {

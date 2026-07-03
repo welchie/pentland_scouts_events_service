@@ -18,7 +18,6 @@ import uk.org.pentlandscouts.events.qrcode.QRCodeGenerator;
 
 import java.awt.image.BufferedImage;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/barcodes")
 
