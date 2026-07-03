@@ -43,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/admin/person")
 public class PersonAdminController {
 

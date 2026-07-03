@@ -19,7 +19,6 @@ import uk.org.pentlandscouts.events.utils.EventUtils;
 import java.util.*;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/person")
 
 public class PersonController {

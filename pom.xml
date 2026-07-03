@@ -57,7 +57,7 @@
         <wicket.version>10.9.1</wicket.version>
         <apache.poi.version>5.5.1</apache.poi.version>
         <docker.user>welchie99</docker.user>
-        <docker.password>used2Think$$</docker.password>
+        <docker.password>${env.DOCKER_PASSWORD}</docker.password>
         <docker.url>https://hub.docker.com</docker.url>
         <spring.profile>prod</spring.profile>
         <dockerfile-maven-version>1.4.13</dockerfile-maven-version>

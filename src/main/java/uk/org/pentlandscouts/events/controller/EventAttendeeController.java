@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/eventattendee")
 
 public class EventAttendeeController {
